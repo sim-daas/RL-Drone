@@ -32,7 +32,7 @@ env = Aviary(start_pos=start_pos, start_orn=start_orn, render=True, drone_type="
 env.configureDebugVisualizer(env.COV_ENABLE_GUI, 0)  # Hide GUI panels
 
 # set the flight mode
-env.set_mode(6)
+env.set_mode(7)
 drone = env.drones[0]
 visual_joints = find_visual_rotor_joints(drone)
 rotor_angles = np.zeros(len(visual_joints))
@@ -44,13 +44,40 @@ VISUAL_RPM = 600  # Adjust for desired visual speed
 
 obstacle_id = env.loadURDF(
     "cylinder.urdf",  # Built-in PyBullet URDF
-    basePosition=[2.0, 0.0, 0.0],
-    useFixedBase=True,  # MUST be False for dynamics!
+    basePosition=[2.0, 0.0, 1.0],
+#    useFixedBase=True,  # MUST be False for dynamics!
+)
+env.changeDynamics(
+    obstacle_id,
+    -1,
+    mass=0,  # Zero mass = kinematic
+    linearDamping=0,
+    angularDamping=0
 )
 
+
 env.register_all_new_bodies()
+setpoint = np.array([2.0, 0.0, 0.0, 1.0])
+env.set_setpoint(0, setpoint)
+
 
 for i in range(20000):
+    t = i * 0.01
+    
+    # Define trajectory (circular path)
+    radius = 2.0
+    height = 1.0
+    angular_speed = 5
+    x = radius * np.cos(angular_speed * t)
+    y = radius * np.sin(angular_speed * t)
+    z= height
+    # Set position directly
+    env.resetBasePositionAndOrientation(
+        obstacle_id,
+        [x, y, z],
+        env.getQuaternionFromEuler([0, 0, angular_speed * t])  # Also rotate
+    )
+
     env.step()
     throttle = drone.motors.get_states()  # (4,) array
     update_rotor_angles(rotor_angles, throttle, visual_joints, drone, env, VISUAL_RPM)
