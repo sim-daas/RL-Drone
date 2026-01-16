@@ -67,7 +67,7 @@ for i in range(20000):
     # Define trajectory (circular path)
     radius = 2.0
     height = 1.0
-    angular_speed = 5
+    angular_speed = 0.5
     x = radius * np.cos(angular_speed * t)
     y = radius * np.sin(angular_speed * t)
     z= height
