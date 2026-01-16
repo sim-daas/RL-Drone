@@ -25,7 +25,6 @@ env = Aviary(
 
 # set to position control
 env.set_mode(7)
-
 # simulate for 1000 steps (1000/120 ~= 8 seconds)
 for i in range(1000):
     env.step()
