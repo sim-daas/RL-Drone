@@ -43,7 +43,7 @@ VISUAL_RPM = 600  # Adjust for desired visual speed
 
 
 obstacle_id = env.loadURDF(
-    "models/cylinder.urdf",  # Built-in PyBullet URDF
+    "models/models/jetty.urdf",  # Built-in PyBullet URDF
     basePosition=[2.0, 0.0, 1.0],
 #    useFixedBase=True,  # MUST be False for dynamics!
 )
@@ -67,7 +67,7 @@ for i in range(20000):
     # Define trajectory (circular path)
     radius = 2.0
     height = 1.0
-    angular_speed = 0.5
+    angular_speed = 0
     x = radius * np.cos(angular_speed * t)
     y = radius * np.sin(angular_speed * t)
     z= height
