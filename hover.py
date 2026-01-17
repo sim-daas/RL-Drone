@@ -43,7 +43,7 @@ VISUAL_RPM = 600  # Adjust for desired visual speed
 
 
 obstacle_id = env.loadURDF(
-    "models/models/jetty.urdf",  # Built-in PyBullet URDF
+    "models/jetty.urdf",  # Built-in PyBullet URDF
     basePosition=[2.0, 0.0, 1.0],
 #    useFixedBase=True,  # MUST be False for dynamics!
 )
