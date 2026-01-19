@@ -53,10 +53,10 @@ VISUAL_RPM = 600  # Adjust for desired visual speed
 
 
 
-warehouse_id = env.loadURDF("planer.urdf", useFixedBase=True, flags=env.URDF_INITIALIZE_SAT_FEATURES | env.GEOM_FORCE_CONCAVE_TRIMESH, globalScaling=1, basePosition=[0,0,0.1])
-warehouse_id = env.loadURDF("wall.urdf", useFixedBase=True, flags=env.URDF_USE_MATERIAL_COLORS_FROM_MTL, globalScaling=1, basePosition=[0,0,0.1])
-warehouse_id = env.loadURDF("cieling.urdf", useFixedBase=True, flags=env.URDF_USE_MATERIAL_COLORS_FROM_MTL, globalScaling=1, basePosition=[0,0,0.1])
-warehouse_id = env.loadURDF("rafter.urdf", useFixedBase=True, flags=env.URDF_USE_MATERIAL_COLORS_FROM_MTL, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("planer.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("wall.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("cieling.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("rafter.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
 
 
 setpoint = np.array([-1.0, -0.8, 0.0])
