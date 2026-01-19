@@ -55,8 +55,21 @@ VISUAL_RPM = 600  # Adjust for desired visual speed
 
 warehouse_id = env.loadURDF("planer.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
 warehouse_id = env.loadURDF("wall.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("column.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
 warehouse_id = env.loadURDF("cieling.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
 warehouse_id = env.loadURDF("rafter.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("metalstairs.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("black.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("blackpure.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("blank.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("bumper.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("container.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("containerfloor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("door.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("doorbase.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("glass.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("ramp.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("slidingdoor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
 
 
 setpoint = np.array([-1.0, -0.8, 0.0])
