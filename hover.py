@@ -24,7 +24,7 @@ drone_options = []
 drone_options.append(dict(drone_model="primitive_drone", control_hz=240))
 
 # the starting position and orientations
-start_pos = np.array([[0.0, 0.0, 1.0]])
+start_pos = np.array([[0.0, 0.0, 5.0]])
 start_orn = np.array([[0.0, 0.0, 0.0]])
 
 # environment setup, attach the windfield
@@ -40,46 +40,24 @@ VISUAL_RPM = 600  # Adjust for desired visual speed
 
 
 
-
+env.setAdditionalSearchPath("models/converted_assets/") 
 
 obstacle_id = env.loadURDF(
-    "models/jetty.urdf",  # Built-in PyBullet URDF
-    basePosition=[2.0, 0.0, 1.0],
-#    useFixedBase=True,  # MUST be False for dynamics!
+    "models/converted_assets/jetty.urdf",  # Built-in PyBullet URDF
+    basePosition=[0.0, 0.0, 1.0],
+    useFixedBase=True,  # MUST be False for dynamics!
+    globalScaling=0.2,
+    flags=env.URDF_USE_MATERIAL_COLORS_FROM_MTL
 )
-env.changeDynamics(
-    obstacle_id,
-    -1,
-    mass=0,  # Zero mass = kinematic
-    linearDamping=0,
-    angularDamping=0
-)
-
 
 env.register_all_new_bodies()
-setpoint = np.array([2.0, 0.0, 0.0, 1.0])
+setpoint = np.array([2.0, 0.0, 0.0, 5.0])
 env.set_setpoint(0, setpoint)
 
 
 for i in range(20000):
-    t = i * 0.01
-    
-    # Define trajectory (circular path)
-    radius = 2.0
-    height = 1.0
-    angular_speed = 0
-    x = radius * np.cos(angular_speed * t)
-    y = radius * np.sin(angular_speed * t)
-    z= height
-    # Set position directly
-    env.resetBasePositionAndOrientation(
-        obstacle_id,
-        [x, y, z],
-        env.getQuaternionFromEuler([0, 0, angular_speed * t])  # Also rotate
-    )
-
     env.step()
     throttle = drone.motors.get_states()  # (4,) array
     update_rotor_angles(rotor_angles, throttle, visual_joints, drone, env, VISUAL_RPM)
 
-env.close()
+env.disconnect()
