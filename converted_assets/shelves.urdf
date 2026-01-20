@@ -1,0 +1,1282 @@
+<?xml version="1.0"?>
+<robot name="ramp">
+  <link name="shelves">
+    <visual>
+      <origin xyz="-7.2612 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-7.2612 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-7.2612 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-7.2612 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-7.2612 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-7.2612 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-7.2612 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-7.2612 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-7.2612 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-7.2612 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-7.2612 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-7.2612 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-4.2612 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-4.2612 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-4.2612 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-4.2612 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-4.2612 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-4.2612 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-4.2612 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-4.2612 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-4.2612 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-4.2612 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-4.2612 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-4.2612 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-4.2612 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-4.2612 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-3.7612 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-3.7612 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-3.7612 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-3.7612 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-3.7612 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-3.7612 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-3.7612 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-3.7612 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-3.7612 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-3.7612 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-3.7612 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-3.7612 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-3.7612 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-3.7612 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.7612 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.7612 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.7612 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.7612 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.7612 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.7612 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.7612 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.7612 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.7612 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.7612 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.7612 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.7612 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.7612 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.7612 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.2612 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.2612 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.2612 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.2612 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.2612 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.2612 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.2612 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.2612 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.2612 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.2612 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.2612 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.2612 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-0.2612 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.2612 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="2.7388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="2.7388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="2.7388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="2.7388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="2.7388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="2.7388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="2.7388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="2.7388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="-7.2612 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-7.2612 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="2.7388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="2.7388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="2.7388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="2.7388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="2.7388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="2.7388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="3.2388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="3.2388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="3.2388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="3.2388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="3.2388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="3.2388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="3.2388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="3.2388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="3.2388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="3.2388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="3.2388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="3.2388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="3.2388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="3.2388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.2388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.2388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.2388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.2388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.2388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.2388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.2388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.2388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.2388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.2388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.2388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.2388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.2388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.2388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.7388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.7388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.7388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.7388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.7388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.7388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.7388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.7388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.7388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.7388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.7388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.7388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="6.7388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="6.7388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="9.7388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="9.7388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="9.7388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="9.7388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="9.7388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="9.7388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="9.7388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="9.7388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="9.7388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="9.7388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="9.7388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="9.7388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="9.7388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="9.7388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="10.2388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="10.2388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="10.2388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="10.2388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="10.2388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="10.2388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="10.2388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="10.2388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="10.2388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="10.2388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="10.2388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="10.2388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="10.2388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="10.2388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.2388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.2388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.2388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.2388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.2388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.2388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.2388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.2388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.2388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.2388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.2388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.2388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.2388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.2388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.7388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.7388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.7388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.7388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.7388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.7388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.7388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.7388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.7388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.7388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.7388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.7388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="13.7388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="13.7388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="16.7388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="16.7388 -0.0508 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="16.7388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="16.7388 0.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="16.7388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="16.7388 1.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="16.7388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="16.7388 2.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="16.7388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="16.7388 3.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="16.7388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="16.7388 4.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="16.7388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="16.7388 5.9492 0.0000" rpy="0.0000 -0.0000 1.5708"/>
+      <geometry>
+        <mesh filename="picking-shelves.obj" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.0"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+</robot>

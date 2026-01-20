@@ -24,7 +24,7 @@ drone_options = []
 drone_options.append(dict(drone_model="primitive_drone", control_hz=240))
 
 # the starting position and orientations
-start_pos = np.array([[0.0, 0.0, 3]])
+start_pos = np.array([[0.5, 0.0, 1.0]])
 start_orn = np.array([[0.0, 0.0, 0.0]])
 
 # environment setup, attach the windfield
@@ -71,9 +71,9 @@ warehouse_id = env.loadURDF("doorbase.urdf", useFixedBase=True, globalScaling=1,
 warehouse_id = env.loadURDF("glass.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
 warehouse_id = env.loadURDF("ramp.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
 warehouse_id = env.loadURDF("slidingdoor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+warehouse_id = env.loadURDF("shelves.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
 
-
-setpoint = np.array([-1.0, -0.8, 0.0])
+setpoint = np.array([2.0, 0.0, 0.0])
 env.set_setpoint(0, setpoint)
 
 
