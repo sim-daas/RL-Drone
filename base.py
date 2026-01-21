@@ -13,6 +13,7 @@ class Env(Aviary):
         wind_type: None | str | type[WindFieldClass] = None,
         wind_options: dict[str, Any] = {},
         rpm: int = 600,
+        rl: bool = False,
     ):
         super().__init__(
             start_pos=np.array([[0.0, 0.0, 2.0]]),
@@ -20,6 +21,8 @@ class Env(Aviary):
             render=True,
             drone_type="quadx",
             drone_options=[dict(drone_model="primitive_drone")],
+            wind_type=wind_type,
+            wind_options=wind_options,
         )
         
         self.configureDebugVisualizer(self.COV_ENABLE_GUI, 0)  # Hide GUI panels
@@ -32,38 +35,49 @@ class Env(Aviary):
         self.rotor_angles = np.zeros(len(self.visual_joints))
         self.VISUAL_RPM = rpm
         
-        self.loadURDF("converted_assets/planer.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/wall.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/column.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/cieling.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/rafter.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/metalstairs.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/black.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/blackpure.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/blank.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/bumper.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/container.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/containerfloor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/door.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/doorbase.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/glass.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/ramp.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/slidingdoor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
-        self.loadURDF("converted_assets/shelves.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+        if not rl:    
+            self.loadURDF("converted_assets/planer.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/wall.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/column.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/cieling.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/rafter.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/metalstairs.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/black.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/blackpure.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/blank.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/bumper.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/container.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/containerfloor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/door.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/doorbase.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/glass.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/ramp.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/slidingdoor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
+            self.loadURDF("converted_assets/shelves.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.1])
         
         self.register_all_new_bodies()
         
     def start(self, steps:int=20000):
         for i in range(steps):
             self.step()
-            throttle = self.drone.motors.get_states()  # (4,) array
-            self.update_rotor_angles(throttle, self.visual_joints, self.drone, self, self.VISUAL_RPM)
-            
         self.disconnect()
+        
+    def step(self):
+        super().step()
+        if not self.rl:
+            self.update_rotor_angles()
     
     def stop(self):
         self.disconnect()
      
+    def update_rotor_angles(self):
+        self.throttle = self.drone.motors.get_states()
+        for j, joint_idx in enumerate(self.visual_joints):
+            rpm = self.throttle[j] * self.VISUAL_RPM
+            angular_vel = (rpm / 60.0) * 2.0 * np.pi
+            self.rotor_angles[j] += angular_vel * self.step_period
+            self.drone.p.resetJointState(self.drone.Id, joint_idx, self.rotor_angles[j])
+
     def find_visual_rotor_joints(self):
         visual_joints = []
         for i in range(self.drone.p.getNumJoints(self.drone.Id)):
@@ -71,14 +85,6 @@ class Env(Aviary):
             if b"visual_rotor" in joint_info[1]: 
                 visual_joints.append(i)
         return visual_joints
-
-    def update_rotor_angles(self, throttle, visual_joints, drone, env, VISUAL_RPM):
-        for j, joint_idx in enumerate(self.visual_joints):
-            rpm = throttle[j] * self.VISUAL_RPM
-            angular_vel = (rpm / 60.0) * 2.0 * np.pi
-            self.rotor_angles[j] += angular_vel * self.step_period
-            self.drone.p.resetJointState(self.drone.Id, joint_idx, self.rotor_angles[j])
-
 
 if __name__ == "__main__":
     env = Env(rpm=600)
