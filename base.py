@@ -37,10 +37,10 @@ class Env(Aviary):
         self.rl = rl
         
         if not rl:    
-            self.loadURDF("converted_assets/planer.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
+            self.warehouse_id = self.loadURDF("converted_assets/planer.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
             self.loadURDF("converted_assets/wall.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/column.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
             self.loadURDF("converted_assets/cieling.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
+            self.loadURDF("converted_assets/column.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
             self.loadURDF("converted_assets/rafter.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
             self.loadURDF("converted_assets/metalstairs.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
             self.loadURDF("converted_assets/black.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
@@ -58,6 +58,12 @@ class Env(Aviary):
         
         self.register_all_new_bodies()
         
+        # Initialize LiDAR parameters
+        self.laser_range = 10.0  # Maximum range in meters
+        self.laser_link_idx = self.find_laser_link()
+        self.num_rays = 60  # Number of laser rays (6° between each ray)
+        self.lidar_line_ids = [None] * self.num_rays  # Store line IDs for each ray
+        
     def start(self, steps:int=20000):
         for i in range(steps):
             self.step()
@@ -67,6 +73,8 @@ class Env(Aviary):
         super().step()
         if not self.rl:
             self.update_rotor_angles()
+            if not self.rl:
+                lidar_data = self.get_lidar_reading(visualize=True)
     
     def stop(self):
         self.disconnect()
@@ -86,6 +94,81 @@ class Env(Aviary):
             if b"visual_rotor" in joint_info[1]: 
                 visual_joints.append(i)
         return visual_joints
+
+    def find_laser_link(self):
+        """Find the laser sensor link index"""
+        for i in range(self.drone.p.getNumJoints(self.drone.Id)):
+            joint_info = self.drone.p.getJointInfo(self.drone.Id, i)
+            if b"laser_sensor" in joint_info[12]:  # Link name
+                return i
+        return -1
+    
+    def get_lidar_reading(self, visualize=True):
+        """Perform 360° raycast from laser sensor with multiple rays"""
+        if self.laser_link_idx < 0:
+            return None
+            
+        # Get laser link world position and orientation
+        link_state = self.drone.p.getLinkState(self.drone.Id, self.laser_link_idx)
+        laser_pos = link_state[0]
+        laser_orn = link_state[1]
+        
+        # Convert quaternion to rotation matrix
+        rot_matrix = self.drone.p.getMatrixFromQuaternion(laser_orn)
+        
+        distances = []
+        
+        # Create rays in 360° around the sensor
+        # Starting from forward (0°) and going clockwise
+        angle_increment = 2 * np.pi / self.num_rays
+        
+        for i in range(self.num_rays):
+            # Clockwise: negate angle
+            angle = -i * angle_increment
+            
+            # Calculate direction vector (rotating around Z-axis in sensor's local frame)
+            # Forward direction in local frame (X-axis forward)
+            local_forward = np.array([np.cos(angle), np.sin(angle), 0])
+            
+            # Transform to world frame
+            forward = [
+                rot_matrix[0] * local_forward[0] + rot_matrix[1] * local_forward[1] + rot_matrix[2] * local_forward[2],
+                rot_matrix[3] * local_forward[0] + rot_matrix[4] * local_forward[1] + rot_matrix[5] * local_forward[2],
+                rot_matrix[6] * local_forward[0] + rot_matrix[7] * local_forward[1] + rot_matrix[8] * local_forward[2]
+            ]
+            
+            # Calculate ray end point
+            ray_end = [
+                laser_pos[0] + forward[0] * self.laser_range,
+                laser_pos[1] + forward[1] * self.laser_range,
+                laser_pos[2] + forward[2] * self.laser_range
+            ]
+            
+            # Perform raycast
+            ray_result = self.drone.p.rayTest(laser_pos, ray_end)[0]
+            
+            distance = ray_result[2] * self.laser_range
+            distances.append(distance)
+            
+            # Visualize the laser ray
+            if visualize:
+                hit_pos = ray_result[3] if ray_result[0] >= 0 else ray_end
+                line_color = [1, 0, 0] if ray_result[0] >= 0 else [0, 1, 0]  # Red if hit, green if no hit
+                
+                if self.lidar_line_ids[i] is not None:
+                    self.lidar_line_ids[i] = self.drone.p.addUserDebugLine(
+                        laser_pos, hit_pos, line_color, lineWidth=1, 
+                        replaceItemUniqueId=self.lidar_line_ids[i]
+                    )
+                else:
+                    self.lidar_line_ids[i] = self.drone.p.addUserDebugLine(
+                        laser_pos, hit_pos, line_color, lineWidth=1
+                    )
+        
+        return {
+            'num_rays': self.num_rays,
+            'distances': distances  # Starting from forward (0°), clockwise
+        }
 
 if __name__ == "__main__":
     env = Env(rpm=600)
