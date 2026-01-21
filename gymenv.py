@@ -175,6 +175,7 @@ class GymEnv(gymnasium.Env):
         # Initialize distance tracking for progress reward
         current_position = self.env.state(0)[-1]  # lin_pos is the last state component
         self.previous_distance = np.linalg.norm(self.goal_position - current_position)
+        self.initial_distance = self.previous_distance
 
     def compute_state(self) -> None:
         """Computes the state of the QuadX.
@@ -245,8 +246,8 @@ class GymEnv(gymnasium.Env):
         """Compute termination, truncation, and reward.
         
         Reward Function:
-        - Goal Success: +100 (terminal)
-        - Collision: -500 (terminal, handled by compute_base_term_trunc_reward)
+        - Goal Success: +5000 (terminal)
+        - Collision: -5000 (terminal, handled by compute_base_term_trunc_reward)
         - Progress Reward: +1.0 × (Distance_{t-1} - Distance_t)
         """
         # First check base termination conditions (collision, out of bounds, max steps)
@@ -260,7 +261,7 @@ class GymEnv(gymnasium.Env):
         
         # Check for goal success
         if current_distance <= self.goal_tolerance:
-            self.reward = 100.0
+            self.reward = 5000.0
             self.info["env_complete"] = True
             self.termination = True
             return
@@ -268,8 +269,7 @@ class GymEnv(gymnasium.Env):
         # If not terminated/truncated by base conditions or goal, compute progress reward
         if not self.termination and not self.truncation:
             # Progress reward: positive if moving toward goal, negative if moving away
-            progress = self.previous_distance - current_distance
-            self.reward = 1.0 * progress
+            self.reward = self.initial_distance / current_distance
             
             # Update previous distance for next step
             self.previous_distance = current_distance
@@ -284,13 +284,13 @@ class GymEnv(gymnasium.Env):
         # contact_array contains collision info for all bodies
         # If drone collides with ANY object (plane, shelves, walls, etc.), terminate
         if np.any(self.env.contact_array):
-            self.reward = -500.0
+            self.reward = -5000.0
             self.info["collision"] = True
             self.termination |= True
 
         # exceed flight dome
         if np.linalg.norm(self.env.state(0)[-1]) > self.flight_dome_size:
-            self.reward = -500.0
+            self.reward = -5000.0
             self.info["out_of_bounds"] = True
             self.termination |= True
 
