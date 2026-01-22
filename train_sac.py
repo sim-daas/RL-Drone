@@ -94,7 +94,7 @@ def train():
     GOAL_POSITION = [18.0, -5.0, 1.0]  # Fixed goal position
     LOG_DIR = "./logs/drone_sac_obstacle_avoidance/"
     TENSORBOARD_LOG = "./logs/tensorboard/"
-    N_ENVS = 2  # Number of parallel environments
+    N_ENVS = 6  # Number of parallel environments
     TOTAL_STEPS = 1_000_000  # 1 million timesteps
     
     # SAC hyperparameters
