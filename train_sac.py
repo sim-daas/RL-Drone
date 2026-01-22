@@ -58,7 +58,7 @@ def get_latest_checkpoint(log_dir):
     valid_checkpoints = []
     for zip_path in zip_files:
         # Extract steps from: drone_sac_500000_steps.zip
-        match = re.search(r'drone_sac_(\\d+)_steps\\.zip$', os.path.basename(zip_path))
+        match = re.search(r'drone_sac_(\d+)_steps\.zip$', os.path.basename(zip_path))
         if not match:
             continue
             

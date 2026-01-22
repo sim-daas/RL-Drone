@@ -79,15 +79,14 @@ class GymEnv(gymnasium.Env):
             dtype=np.float64,
         )
         
-        # Update observation space to include lidar (60) + goal info (distance + direction = 4)
-        # Total: 13 (attitude) + 3 (action) + 4 (aux) + 60 (lidar) + 1 (distance) + 3 (direction) = 84
+        # Update observation space to include lidar (60) + relative goal position (3)
+        # Total: 13 (attitude) + 3 (action) + 4 (aux) + 60 (lidar) + 3 (goal_rel) = 83
         total_obs_dim = (
             self.attitude_space.shape[0] +  # 13
             self.action_space.shape[0] +     # 3
             self.auxiliary_space.shape[0] +  # 4
             60 +  # lidar readings
-            1 +   # goal distance
-            3     # normalized goal direction
+            3     # relative goal position
         )
         
         self.observation_space = spaces.Box(
@@ -194,10 +193,9 @@ class GymEnv(gymnasium.Env):
         - Previous action
         - Auxiliary state
         - Lidar readings (60 values)
-        - Goal distance (1 value: scalar distance to goal)
-        - Normalized goal direction (3 values: unit vector pointing to goal)
+        - Relative position to goal (3 values: dx, dy, dz)
         
-        Total observation: 84 dimensions
+        Total observation: 83 dimensions
         """
         # Get default state components
         ang_vel, ang_pos, lin_vel, lin_pos, quaternion = self.compute_attitude()
@@ -207,28 +205,20 @@ class GymEnv(gymnasium.Env):
         lidar_data = self.env.get_lidar_reading(visualize=False)
         lidar_distances = np.array(lidar_data['distances'], dtype=np.float64)
         
-        # Compute goal information: distance + normalized direction
-        goal_vector = self.goal_position - lin_pos
-        goal_distance = np.linalg.norm(goal_vector)
-        
-        # Normalize direction vector (avoid division by zero)
-        if goal_distance > 1e-8:
-            goal_direction = goal_vector / goal_distance
-        else:
-            goal_direction = np.zeros(3, dtype=np.float64)
+        # Compute relative position to goal (component-wise difference)
+        relative_goal = self.goal_position - lin_pos
         
         # Combine all components using quaternion representation
         self.state = np.concatenate([
-            ang_vel,                    # 3
-            quaternion,                 # 4
-            lin_vel,                    # 3
-            lin_pos,                    # 3
-            self.action,                # 3
-            aux_state,                  # 4
-            lidar_distances,            # 60
-            np.array([goal_distance]),  # 1 (scalar distance)
-            goal_direction,             # 3 (normalized direction)
-        ], axis=-1)  # Total: 84
+            ang_vel,           # 3
+            quaternion,        # 4
+            lin_vel,           # 3
+            lin_pos,           # 3
+            self.action,       # 3
+            aux_state,         # 4
+            lidar_distances,   # 60
+            relative_goal,     # 3
+        ], axis=-1)  # Total: 83
         return self.state
 
     def compute_auxiliary(self) -> np.ndarray:
