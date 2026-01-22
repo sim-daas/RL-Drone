@@ -1,4 +1,4 @@
-"""Test script for GymEnv with obstacle avoidance"""
+"""Test script for GymEnv with improved goal representation"""
 
 import numpy as np
 from gymenv import GymEnv
@@ -17,7 +17,7 @@ def test_environment():
     )
     
     print("=" * 60)
-    print("GymEnv Obstacle Avoidance Test")
+    print("GymEnv Obstacle Avoidance Test (Option 1 Implementation)")
     print("=" * 60)
     print(f"Goal Position: {goal_position}")
     print(f"Goal Tolerance: {env.goal_tolerance}m")
@@ -29,8 +29,8 @@ def test_environment():
     # Reset environment
     obs, info = env.reset()
     print(f"\nInitial Observation Shape: {obs.shape}")
-    print(f"Expected Shape: (83,)")
-    print(f"Match: {obs.shape == (83,)}")
+    print(f"Expected Shape: (84,)")
+    print(f"Match: {obs.shape == (84,)}")
     
     # Extract components from observation
     ang_vel = obs[0:3]
@@ -40,7 +40,8 @@ def test_environment():
     prev_action = obs[13:16]
     aux_state = obs[16:20]
     lidar = obs[20:80]
-    rel_goal = obs[80:83]
+    goal_distance = obs[80]       # NEW: Scalar distance
+    goal_direction = obs[81:84]   # NEW: Normalized direction
     
     print(f"\nState Components:")
     print(f"  - Angular Velocity: {ang_vel.shape} = {ang_vel}")
@@ -50,32 +51,48 @@ def test_environment():
     print(f"  - Previous Action: {prev_action.shape} = {prev_action}")
     print(f"  - Auxiliary State: {aux_state.shape} = {aux_state}")
     print(f"  - Lidar Distances: {lidar.shape} (min: {lidar.min():.2f}, max: {lidar.max():.2f})")
-    print(f"  - Relative Goal Position: {rel_goal.shape} = {rel_goal}")
+    
+    print(f"\n🎯 NEW GOAL REPRESENTATION:")
+    print(f"  - Goal Distance: {goal_distance:.3f} meters")
+    print(f"  - Goal Direction (normalized): {goal_direction}")
+    print(f"  - Direction magnitude: {np.linalg.norm(goal_direction):.6f} (should be ~1.0)")
+    
+    # Verify direction
+    actual_vector = np.array(goal_position) - lin_pos
+    actual_distance = np.linalg.norm(actual_vector)
+    actual_direction = actual_vector / actual_distance if actual_distance > 0 else np.zeros(3)
+    
+    print(f"\n✅ VERIFICATION:")
+    print(f"  Calculated distance: {actual_distance:.3f}m")
+    print(f"  Observation distance: {goal_distance:.3f}m")
+    print(f"  Distance match: {np.isclose(actual_distance, goal_distance)}")
+    print(f"  Direction match: {np.allclose(actual_direction, goal_direction)}")
     
     # Run a few steps with random actions
     print(f"\n{'='*60}")
     print("Running 5 test steps...")
     print(f"{'='*60}")
     
-    for step_num in range(500):
+    for step_num in range(5):
         # Random action
         action = env.action_space.sample()
         
         # Step environment
         obs, reward, terminated, truncated, info = env.step(action)
         
+        # Extract new goal info
         current_pos = obs[10:13]
-        rel_goal = obs[80:83]
-        distance_to_goal = np.linalg.norm(rel_goal)
+        goal_distance = obs[80]
+        goal_direction = obs[81:84]
         
         print(f"\nStep {step_num + 1}:")
         print(f"  Action: {action}")
         print(f"  Current Position: {current_pos}")
-        print(f"  Distance to Goal: {distance_to_goal:.3f}m")
+        print(f"  Goal Distance: {goal_distance:.3f}m")
+        print(f"  Goal Direction: {goal_direction} (mag={np.linalg.norm(goal_direction):.3f})")
         print(f"  Reward: {reward:.4f}")
         print(f"  Terminated: {terminated}")
         print(f"  Truncated: {truncated}")
-        print(f"  Info: {info}")
         
         if terminated or truncated:
             print(f"\n  Episode ended!")
@@ -84,7 +101,7 @@ def test_environment():
     # Close environment
     env.close()
     print(f"\n{'='*60}")
-    print("Test completed successfully!")
+    print("✅ Test completed successfully!")
     print(f"{'='*60}")
 
 if __name__ == "__main__":
