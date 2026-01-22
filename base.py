@@ -16,9 +16,9 @@ class Env(Aviary):
         rl: bool = False,
     ):
         super().__init__(
-            start_pos=np.array([[0.0, 0.0, 2.0]]),
+            start_pos=np.array([[0.0, -2.0, 1.0]]),
             start_orn=np.array([[0.0, 0.0, 0.0]]),
-            render=True,
+            render=not rl,  # Disable rendering during RL training for speed
             drone_type="quadx",
             drone_options=[dict(drone_model="primitive_drone")],
             wind_type=wind_type,
@@ -36,25 +36,25 @@ class Env(Aviary):
         self.VISUAL_RPM = rpm
         self.rl = rl
         
+        self.warehouse_id = self.loadURDF("converted_assets/planer.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+        self.loadURDF("converted_assets/shelves.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
         if not rl:    
-            self.warehouse_id = self.loadURDF("converted_assets/planer.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/wall.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/cieling.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/column.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/rafter.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/metalstairs.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/black.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/blackpure.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/blank.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/bumper.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/container.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/containerfloor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/door.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/doorbase.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/glass.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/ramp.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/slidingdoor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
-            self.loadURDF("converted_assets/shelves.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.0001])
+            self.loadURDF("converted_assets/wall.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/cieling.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/column.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/rafter.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/metalstairs.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/black.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/blackpure.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/blank.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/bumper.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/container.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/containerfloor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/door.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/doorbase.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/glass.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/ramp.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            self.loadURDF("converted_assets/slidingdoor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
         
         self.register_all_new_bodies()
         
