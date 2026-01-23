@@ -74,7 +74,7 @@ class Env(Aviary):
         if not self.rl:
             self.update_rotor_angles()
             if not self.rl:
-                lidar_data = self.get_lidar_reading(visualize=True)
+                lidar_data = self.get_lidar_reading(visualize=False)
     
     def stop(self):
         self.disconnect()
