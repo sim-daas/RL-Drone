@@ -137,7 +137,7 @@ if __name__ == '__main__':
                         help='Path to VecNormalize stats (.pkl)')
     parser.add_argument('--episodes', type=int, default=5,
                         help='Number of episodes to evaluate')
-    parser.add_argument('--goal-x', type=float, default=-18.0,
+    parser.add_argument('--goal-x', type=float, default=18.0,
                         help='Goal X coordinate')
     parser.add_argument('--goal-y', type=float, default=-5.0,
                         help='Goal Y coordinate')

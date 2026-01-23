@@ -51,6 +51,7 @@ class GymEnv(gymnasium.Env):
         self.min_velocity = minvelocity
         self.agent_hz = agent_hz
         self.rl = rl
+        self.max_altitude = 2.5  # Maximum altitude constraint (meters)
 
         """GYMNASIUM STUFF"""
         self.attitude_space = spaces.Box(
@@ -60,11 +61,12 @@ class GymEnv(gymnasium.Env):
             low=-np.inf, high=np.inf, shape=(4,), dtype=np.float64
         )
 
-        # define the action space for mode 6 (velocity setpoints)
-        # Action: [v_x, v_y, v_z]
+        # define the action space for mode 6 (full ground velocity + yaw rate + vertical velocity)
+        # Action: [vx, vy, vr, vz]
         velocity_limit = 5.0
-        high = np.array([velocity_limit, velocity_limit, velocity_limit])
-        low = np.array([-velocity_limit, -velocity_limit, -velocity_limit])
+        yaw_rate_limit = 2.0  # rad/s
+        high = np.array([velocity_limit, velocity_limit, yaw_rate_limit, velocity_limit])
+        low = np.array([-velocity_limit, -velocity_limit, -yaw_rate_limit, -velocity_limit])
         self.action_space = spaces.Box(low=low, high=high, dtype=np.float64)
 
         # the whole implicit state space = attitude + previous action + auxiliary information
@@ -79,15 +81,16 @@ class GymEnv(gymnasium.Env):
             dtype=np.float64,
         )
         
-        # Update observation space to include lidar (24) + goal info (distance + direction = 4)
-        # Total: 13 (attitude) + 3 (action) + 4 (aux) + 24 (lidar) + 1 (distance) + 3 (direction) = 48
+        # Update observation space to include lidar (24) + goal info + yaw
+        # Total: 13 (attitude) + 4 (action) + 4 (aux) + 24 (lidar) + 1 (distance) + 3 (direction) + 1 (yaw) = 50
         total_obs_dim = (
             self.attitude_space.shape[0] +  # 13
-            self.action_space.shape[0] +     # 3
+            self.action_space.shape[0] +     # 4 (changed from 3)
             self.auxiliary_space.shape[0] +  # 4
-            24 +  # lidar readings (reduced from 60)
+            24 +  # lidar readings
             1 +   # goal distance
-            3     # normalized goal direction
+            3 +   # normalized goal direction
+            1     # current yaw angle
         )
         
         self.observation_space = spaces.Box(
@@ -137,7 +140,7 @@ class GymEnv(gymnasium.Env):
         self.termination = False
         self.truncation = False
         self.state = None
-        self.action = np.zeros((3,))
+        self.action = np.zeros((4,))
         self.reward = 0.0
         self.info = {}
         self.info["out_of_bounds"] = False
@@ -178,9 +181,10 @@ class GymEnv(gymnasium.Env):
 
         self.compute_state()
         
-        # Initialize distance tracking
+        # Initialize distance tracking for progress reward
         current_position = self.env.state(0)[-1]
-        self.initial_distance = np.linalg.norm(self.goal_position - current_position)
+        self.previous_distance = np.linalg.norm(self.goal_position - current_position)
+        self.initial_distance = self.previous_distance
 
     def compute_state(self) -> None:
         """Computes the state of the QuadX.
@@ -189,11 +193,12 @@ class GymEnv(gymnasium.Env):
         - Default attitude state (ang_vel, quaternion, lin_vel, lin_pos)
         - Previous action
         - Auxiliary state
-        - Lidar readings (24 values: reduced from 60 for faster learning)
+        - Lidar readings (24 values)
         - Goal distance (1 value: scalar distance to goal)
         - Normalized goal direction (3 values: unit vector pointing to goal)
+        - Current yaw angle (1 value: heading in radians)
         
-        Total observation: 48 dimensions (reduced from 84)
+        Total observation: 50 dimensions
         """
         # Get default state components
         ang_vel, ang_pos, lin_vel, lin_pos, quaternion = self.compute_attitude()
@@ -213,18 +218,22 @@ class GymEnv(gymnasium.Env):
         else:
             goal_direction = np.zeros(3, dtype=np.float64)
         
+        # Get current yaw angle from euler angles
+        current_yaw = ang_pos[2]  # Yaw is the z-axis rotation in euler angles
+        
         # Combine all components using quaternion representation
         self.state = np.concatenate([
             ang_vel,                    # 3
             quaternion,                 # 4
             lin_vel,                    # 3
             lin_pos,                    # 3
-            self.action,                # 3
+            self.action,                # 4 (changed from 3)
             aux_state,                  # 4
-            lidar_distances,            # 60
+            lidar_distances,            # 24
             np.array([goal_distance]),  # 1 (scalar distance)
             goal_direction,             # 3 (normalized direction)
-        ], axis=-1)  # Total: 84
+            np.array([current_yaw]),    # 1 (current heading)
+        ], axis=-1)  # Total: 50
         return self.state
 
     def compute_auxiliary(self) -> np.ndarray:
@@ -259,33 +268,46 @@ class GymEnv(gymnasium.Env):
     def compute_term_trunc_reward(self) -> None:
         """Compute termination, truncation, and reward.
         
-        Ultra-Simple Reward Function:
-        - Step cost: -0.1 (encourages efficiency)
+        Progress-Based Reward Function (Phase 2):
+        - Moving toward goal (delta > 0.006m): +20.0 * delta
+        - Moving away (delta < -0.006m): -0.1
+        - Hovering/minimal movement: -0.1
         - Collision: -100.0 (terminal)
         - Out of bounds: -100.0 (terminal)
         - Goal success: +500.0 (terminal)
-        - Velocity penalty: -0.01 * ||velocity||² (encourages smooth movement)
         """
-        # Start with base step cost
-        self.reward = -0.1
-        
-        # Add small velocity penalty to encourage smooth control
-        lin_vel = self.env.state(0)[2]
-        velocity_penalty = 0.01 * np.linalg.norm(lin_vel)**2
-        self.reward -= velocity_penalty
-        
-        # Check base termination conditions (collision, out of bounds, max steps)
+        # Check base termination conditions first (collision, out of bounds, max steps)
         self.compute_base_term_trunc_reward()
         
-        # Check for goal success (overrides step cost)
+        # Calculate progress toward goal
+        current_position = self.env.state(0)[-1]
+        current_distance = np.linalg.norm(self.goal_position - current_position)
+        
+        # Check for goal success (overrides progress reward)
         if not self.termination and not self.truncation:
-            current_position = self.env.state(0)[-1]
-            current_distance = np.linalg.norm(self.goal_position - current_position)
-            
             if current_distance <= self.goal_tolerance:
                 self.reward = 500.0  # Big positive reward for success
                 self.info["env_complete"] = True
                 self.termination = True
+                return
+        
+        # Progress-based reward (only if not terminated)
+        if not self.termination and not self.truncation:
+            delta = self.previous_distance - current_distance
+            THRESHOLD = 0.006  # 6mm threshold for meaningful movement
+            
+            if delta > THRESHOLD:
+                # Moving toward goal - GOOD!
+                self.reward = 20.0 * delta
+            elif delta < -THRESHOLD:
+                # Moving away from goal - BAD!
+                self.reward = -0.1
+            else:
+                # Hovering or minimal movement - BAD!
+                self.reward = -0.1
+            
+            # Update tracking for next step
+            self.previous_distance = current_distance
 
     def compute_base_term_trunc_reward(self) -> None:
         """Check base termination conditions with fixed penalties."""
@@ -303,6 +325,13 @@ class GymEnv(gymnasium.Env):
         if np.linalg.norm(self.env.state(0)[-1]) > self.flight_dome_size:
             self.reward = -100.0  # Fixed penalty
             self.info["out_of_bounds"] = True
+            self.termination |= True
+        
+        # Exceed altitude ceiling (Z-ceiling constraint)
+        current_position = self.env.state(0)[-1]
+        if current_position[2] > self.max_altitude:
+            self.reward = -100.0  # Fixed penalty
+            self.info["altitude_violation"] = True
             self.termination |= True
 
     def step(self, action: np.ndarray) -> tuple[Any, float, bool, bool, dict[str, Any]]:

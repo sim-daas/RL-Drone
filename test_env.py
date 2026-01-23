@@ -1,13 +1,12 @@
-"""Test script for GymEnv with simplified rewards and reduced lidar"""
+"""Test Phase 2 Progress-Based Rewards"""
 
 import numpy as np
 from gymenv import GymEnv
 
-def test_environment():
-    """Test the custom drone obstacle avoidance environment."""
+def test_phase2_rewards():
+    """Test progress-based reward system."""
     
-    # Create environment with a goal position
-    goal_position = [18.0, -5.0, 1.0]
+    goal_position = [18.0, -2.0, 1.5]
     env = GymEnv(
         goal_position=goal_position,
         goal_tolerance=0.2,
@@ -17,96 +16,91 @@ def test_environment():
     )
     
     print("=" * 70)
-    print("GymEnv Test - Simplified Rewards + 24 Lidar Rays")
+    print("Phase 2 Test - Progress-Based Rewards")
     print("=" * 70)
-    print(f"Goal Position: {goal_position}")
-    print(f"Goal Tolerance: {env.goal_tolerance}m")
-    print(f"Max Episode Duration: {env.max_duration_seconds}s ({env.max_steps} steps)")
-    print(f"Action Space: {env.action_space}")
-    print(f"Observation Space: {env.observation_space}")
-    print(f"Observation Shape: {env.observation_space.shape}")
+    print(f"Goal: {goal_position}")
+    print(f"\nReward Structure:")
+    print(f"  • Moving toward goal (delta > 0.006m): +20 × delta")
+    print(f"  • Moving away (delta < -0.006m): -0.1")
+    print(f"  • Hovering (|delta| ≤ 0.006m): -0.1")
+    print(f"  • Goal reached: +500")
+    print(f"  • Collision/OOB: -100")
     print("=" * 70)
     
-    # Reset environment
     obs, info = env.reset()
-    print(f"\n✅ Initial Observation Shape: {obs.shape}")
-    print(f"   Expected: (48,) - Match: {obs.shape == (48,)}")
+    start_pos = obs[10:13]
+    start_distance = obs[45]
     
-    # Extract components from observation
-    ang_vel = obs[0:3]
-    quaternion = obs[3:7]
-    lin_vel = obs[7:10]
-    lin_pos = obs[10:13]
-    prev_action = obs[13:16]
-    aux_state = obs[16:20]
-    lidar = obs[20:44]        # 24 rays now
-    goal_distance = obs[44]
-    goal_direction = obs[45:48]
+    print(f"\nStart position: {start_pos}")
+    print(f"Start distance: {start_distance:.3f}m")
     
-    print(f"\n📊 State Components:")
-    print(f"  - Angular Velocity: {ang_vel.shape}")
-    print(f"  - Quaternion: {quaternion.shape}")
-    print(f"  - Linear Velocity: {lin_vel.shape}")
-    print(f"  - Linear Position: {lin_pos.shape}")
-    print(f"  - Previous Action: {prev_action.shape}")
-    print(f"  - Auxiliary State: {aux_state.shape}")
-    print(f"  - Lidar Distances: {lidar.shape} (24 rays @ 15° spacing)")
-    print(f"  - Goal Distance: {goal_distance:.3f}m")
-    print(f"  - Goal Direction: {goal_direction} (mag={np.linalg.norm(goal_direction):.3f})")
+    print(f"\n🧪 Testing Reward Scenarios:")
+    print("-" * 70)
     
-    print(f"\n🎯 Reward Function Test:")
-    # Test normal step
-    obs, reward, term, trunc, info = env.step(np.array([0.0, 0.0, 0.0]))
-    print(f"  - Normal step reward: {reward:.4f} (should be ≈ -0.1)")
-    print(f"    Components: -0.1 (step) + velocity_penalty")
+    # Scenario 1: Hover (no movement)
+    print(f"\n1. Hover Test:")
+    action = np.array([0.0, 0.0, 0.0, 0.0])  # No movement
+    obs, reward, term, trunc, info = env.step(action)
+    print(f"   Action: [0, 0, 0, 0] (hover)")
+    print(f"   Reward: {reward:.4f} (expected: -0.1)")
     
-    # Test rewards are in expected range
-    assert -1.0 < reward < 0.0, f"Step reward out of range: {reward}"
-    print(f"  ✅ Step reward in valid range")
+    # Scenario 2: Move toward goal
+    print(f"\n2. Move Toward Goal Test:")
+    # Move in positive X direction (toward goal)
+    action = np.array([2.0, 0.0, 0.0, 0.0])
+    obs, reward, term, trunc, info = env.step(action)
+    new_distance = obs[45]
+    delta = start_distance - new_distance
+    print(f"   Action: [2.0, 0, 0, 0] (toward goal)")
+    print(f"   Distance change: {delta:.6f}m")
+    print(f"   Reward: {reward:.4f} (expected: ≈{20*delta:.4f})")
     
-    print(f"\n🚀 Running 5 test steps...")
+    # Reset for clean test
+    env.reset()
+    
+    print(f"\n🚀 Running 10 Steps with Random Actions:")
     print("=" * 70)
     
-    for step_num in range(5):
-        # Random action
+    for step in range(10):
         action = env.action_space.sample()
+        obs, reward, term, trunc, info = env.step(action)
         
-        # Step environment
-        obs, reward, terminated, truncated, info = env.step(action)
+        pos = obs[10:13]
+        dist = obs[45]
         
-        # Extract new goal info
-        current_pos = obs[10:13]
-        goal_distance = obs[44]
-        goal_direction = obs[45:48]
+        # Determine reward type
+        if reward > 1.0:
+            reward_type = "✅ PROGRESS"
+        elif reward < -50:
+            reward_type = "💥 TERMINAL"
+        else:
+            reward_type = "⚠️ PENALTY"
         
-        print(f"\nStep {step_num + 1}:")
-        print(f"  Action: {action}")
-        print(f"  Position: {current_pos}")
-        print(f"  Goal Distance: {goal_distance:.3f}m")
-        print(f"  Reward: {reward:.4f}")
-        print(f"  Terminated: {terminated} | Truncated: {truncated}")
+        print(f"\nStep {step+1}:")
+        print(f"  Position: [{pos[0]:.2f}, {pos[1]:.2f}, {pos[2]:.2f}]")
+        print(f"  Distance: {dist:.3f}m")
+        print(f"  Reward: {reward:+.4f} {reward_type}")
         
-        if terminated or truncated:
+        if term or trunc:
             reason = []
             if info.get("env_complete"): reason.append("GOAL!")
             if info.get("collision"): reason.append("COLLISION")
-            if info.get("out_of_bounds"): reason.append("OUT OF BOUNDS")
-            if truncated and not terminated: reason.append("MAX STEPS")
-            print(f"  ⚠️  Episode ended: {', '.join(reason)}")
+            if info.get("altitude_violation"): reason.append("ALTITUDE")
+            if info.get("out_of_bounds"): reason.append("OOB")
+            if trunc and not term: reason.append("TIMEOUT")
+            print(f"  Episode ended: {', '.join(reason)}")
             break
     
-    # Close environment
     env.close()
-    print(f"\n{'='*70}")
-    print("✅ All tests passed!")
-    print(f"{'='*70}")
     
-    print(f"\n📝 Summary of Changes:")
-    print(f"  ✅ Observation space: 84 → 48 dimensions")
-    print(f"  ✅ Lidar rays: 60 → 24 (15° spacing)")
-    print(f"  ✅ Episode duration: 600s → 30s")
-    print(f"  ✅ Rewards: Ultra-simple (-0.1, -100, +500)")
-    print(f"  ✅ Added velocity penalty for smooth control")
+    print(f"\n{'='*70}")
+    print("✅ Phase 2 Reward System Ready!")
+    print("=" * 70)
+    print(f"\nExpected Training Improvements:")
+    print(f"  → Agent will prefer moving toward goal (+20×delta)")
+    print(f"  → Hovering penalized (-0.1) → encourages action")
+    print(f"  → Moving away penalized (-0.1) → stays focused")
+    print(f"\nNext: Delete old checkpoints and start fresh training!")
 
 if __name__ == "__main__":
-    test_environment()
+    test_phase2_rewards()
