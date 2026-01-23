@@ -12,18 +12,13 @@
   </material>
 
   <link name="base_link">
-    <collision>
-      <geometry>
-        <cylinder radius="0.2" length="2.0"/>
-      </geometry>
-    </collision>
     <inertial>
       <mass value="0.0002"/>
     	<inertia ixx="0.00016668" ixy="0.0" ixz="0.0" iyy="0.00016668" iyz="0.0" izz="0.00000002"/>
   	</inertial>
     <visual>
       <geometry>
-        <cylinder radius="0.2" length="2.0"/>
+        <cylinder radius="0.02" length="2.0"/>
       </geometry>
       <material name="red"/>
     </visual>

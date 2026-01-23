@@ -161,6 +161,7 @@ class GymEnv(gymnasium.Env):
 
         # init env
         self.env = Env(rl=self.rl)
+        self.env.loadURDF("models/cylinder.urdf", basePosition=self.goal_position, globalScaling=1, useFixedBase=True)
 
         if self.render_mode == "human":
             self.camera_parameters = self.env.getDebugVisualizerCamera()
