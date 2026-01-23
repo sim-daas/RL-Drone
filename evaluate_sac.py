@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from gymenv import GymEnv
 
 
-def evaluate_model(model_path, stats_path=None, n_episodes=5, goal_position=[5.0, 0.0, 2.0]):
+def evaluate_model(model_path, stats_path=None, n_episodes=5, goal_position=[18.0, -5.0, 1.0]):
     """
     Evaluate a trained SAC model.
     
@@ -137,11 +137,11 @@ if __name__ == '__main__':
                         help='Path to VecNormalize stats (.pkl)')
     parser.add_argument('--episodes', type=int, default=5,
                         help='Number of episodes to evaluate')
-    parser.add_argument('--goal-x', type=float, default=5.0,
+    parser.add_argument('--goal-x', type=float, default=-18.0,
                         help='Goal X coordinate')
-    parser.add_argument('--goal-y', type=float, default=0.0,
+    parser.add_argument('--goal-y', type=float, default=-5.0,
                         help='Goal Y coordinate')
-    parser.add_argument('--goal-z', type=float, default=2.0,
+    parser.add_argument('--goal-z', type=float, default=1.0,
                         help='Goal Z coordinate')
     
     args = parser.parse_args()

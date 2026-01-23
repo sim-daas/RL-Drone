@@ -40,7 +40,7 @@ class GymEnv(gymnasium.Env):
         self.goal_tolerance = goal_tolerance
         self.render_mode = render_mode
         self.render_resolution = (480, 480)
-        self.max_duration_seconds = 600.0
+        self.max_duration_seconds = 30.0  # 30 seconds for navigation task
         self.attitude_space = 13
         self.flight_mode = flight_mode
         self.flight_dome_size = flight_dome_size
@@ -79,14 +79,15 @@ class GymEnv(gymnasium.Env):
             dtype=np.float64,
         )
         
-        # Update observation space to include lidar (60) + relative goal position (3)
-        # Total: 13 (attitude) + 3 (action) + 4 (aux) + 60 (lidar) + 3 (goal_rel) = 83
+        # Update observation space to include lidar (24) + goal info (distance + direction = 4)
+        # Total: 13 (attitude) + 3 (action) + 4 (aux) + 24 (lidar) + 1 (distance) + 3 (direction) = 48
         total_obs_dim = (
             self.attitude_space.shape[0] +  # 13
             self.action_space.shape[0] +     # 3
             self.auxiliary_space.shape[0] +  # 4
-            60 +  # lidar readings
-            3     # relative goal position
+            24 +  # lidar readings (reduced from 60)
+            1 +   # goal distance
+            3     # normalized goal direction
         )
         
         self.observation_space = spaces.Box(
@@ -177,13 +178,9 @@ class GymEnv(gymnasium.Env):
 
         self.compute_state()
         
-        # Initialize distance tracking for progress reward
-        current_position = self.env.state(0)[-1]  # lin_pos is the last state component
-        self.previous_distance = np.linalg.norm(self.goal_position - current_position)
-        self.initial_distance = self.previous_distance
-        self.best_distance = self.initial_distance 
-        self.penalty = self.min_velocity / self.agent_hz 
-        self.goal_reward = 3*(((45 * (1 / self.agent_hz) * self.initial_distance * self.initial_distance) / self.min_velocity) + (3 * (1 / self.agent_hz) * self.initial_distance) / 2)
+        # Initialize distance tracking
+        current_position = self.env.state(0)[-1]
+        self.initial_distance = np.linalg.norm(self.goal_position - current_position)
 
     def compute_state(self) -> None:
         """Computes the state of the QuadX.
@@ -192,10 +189,11 @@ class GymEnv(gymnasium.Env):
         - Default attitude state (ang_vel, quaternion, lin_vel, lin_pos)
         - Previous action
         - Auxiliary state
-        - Lidar readings (60 values)
-        - Relative position to goal (3 values: dx, dy, dz)
+        - Lidar readings (24 values: reduced from 60 for faster learning)
+        - Goal distance (1 value: scalar distance to goal)
+        - Normalized goal direction (3 values: unit vector pointing to goal)
         
-        Total observation: 83 dimensions
+        Total observation: 48 dimensions (reduced from 84)
         """
         # Get default state components
         ang_vel, ang_pos, lin_vel, lin_pos, quaternion = self.compute_attitude()
@@ -205,20 +203,28 @@ class GymEnv(gymnasium.Env):
         lidar_data = self.env.get_lidar_reading(visualize=False)
         lidar_distances = np.array(lidar_data['distances'], dtype=np.float64)
         
-        # Compute relative position to goal (component-wise difference)
-        relative_goal = self.goal_position - lin_pos
+        # Compute goal information: distance + normalized direction
+        goal_vector = self.goal_position - lin_pos
+        goal_distance = np.linalg.norm(goal_vector)
+        
+        # Normalize direction vector (avoid division by zero)
+        if goal_distance > 1e-8:
+            goal_direction = goal_vector / goal_distance
+        else:
+            goal_direction = np.zeros(3, dtype=np.float64)
         
         # Combine all components using quaternion representation
         self.state = np.concatenate([
-            ang_vel,           # 3
-            quaternion,        # 4
-            lin_vel,           # 3
-            lin_pos,           # 3
-            self.action,       # 3
-            aux_state,         # 4
-            lidar_distances,   # 60
-            relative_goal,     # 3
-        ], axis=-1)  # Total: 83
+            ang_vel,                    # 3
+            quaternion,                 # 4
+            lin_vel,                    # 3
+            lin_pos,                    # 3
+            self.action,                # 3
+            aux_state,                  # 4
+            lidar_distances,            # 60
+            np.array([goal_distance]),  # 1 (scalar distance)
+            goal_direction,             # 3 (normalized direction)
+        ], axis=-1)  # Total: 84
         return self.state
 
     def compute_auxiliary(self) -> np.ndarray:
@@ -253,58 +259,49 @@ class GymEnv(gymnasium.Env):
     def compute_term_trunc_reward(self) -> None:
         """Compute termination, truncation, and reward.
         
-        Reward Function:
-        - Goal Success: 
-        - Collision: -250 * initial_distance (terminal, handled by compute_base_term_trunc_reward)
-        - Progress Reward: initial_distance / current_distance
+        Ultra-Simple Reward Function:
+        - Step cost: -0.1 (encourages efficiency)
+        - Collision: -100.0 (terminal)
+        - Out of bounds: -100.0 (terminal)
+        - Goal success: +500.0 (terminal)
+        - Velocity penalty: -0.01 * ||velocity||² (encourages smooth movement)
         """
-        # First check base termination conditions (collision, out of bounds, max steps)
+        # Start with base step cost
+        self.reward = -0.1
+        
+        # Add small velocity penalty to encourage smooth control
+        lin_vel = self.env.state(0)[2]
+        velocity_penalty = 0.01 * np.linalg.norm(lin_vel)**2
+        self.reward -= velocity_penalty
+        
+        # Check base termination conditions (collision, out of bounds, max steps)
         self.compute_base_term_trunc_reward()
         
-        # Get current position
-        current_position = self.env.state(0)[-1]
-        
-        # Calculate current distance to goal
-        current_distance = np.linalg.norm(self.goal_position - current_position)
-        delta = self.best_distance - current_distance
-        
-        # Check for goal success
-        if current_distance <= self.goal_tolerance:
-            self.reward = self.goal_reward
-            self.info["env_complete"] = True
-            self.termination = True
-            return
-        
-        # If not terminated/truncated by base conditions or goal, compute progress reward
+        # Check for goal success (overrides step cost)
         if not self.termination and not self.truncation:
-            # Progress reward: positive inversly propotional to the distance to the goal and negative if moving away more than 2 meters
-            if delta > 0:
-                # applying a cap to the progress reward
-                r = (delta) * 10 * (self.initial_distance - current_distance)
-                if r < 0.1:
-                    self.reward = r
-
-                self.best_distance = current_distance
-            else:
-                self.reward = -self.penalty
+            current_position = self.env.state(0)[-1]
+            current_distance = np.linalg.norm(self.goal_position - current_position)
+            
+            if current_distance <= self.goal_tolerance:
+                self.reward = 500.0  # Big positive reward for success
+                self.info["env_complete"] = True
+                self.termination = True
 
     def compute_base_term_trunc_reward(self) -> None:
-        """compute_base_term_trunc_reward."""
-        # exceed step count
+        """Check base termination conditions with fixed penalties."""
+        # Exceed step count
         if self.step_count > self.max_steps:
             self.truncation |= True
 
-        # Check for collision with any object in the warehouse
-        # contact_array contains collision info for all bodies
-        # If drone collides with ANY object (plane, shelves, walls, etc.), terminate
+        # Collision with any object
         if np.any(self.env.contact_array):
-            self.reward = -0.5 * self.goal_reward
+            self.reward = -100.0  # Fixed penalty
             self.info["collision"] = True
             self.termination |= True
 
-        # exceed flight dome
+        # Exceed flight dome
         if np.linalg.norm(self.env.state(0)[-1]) > self.flight_dome_size:
-            self.reward = -0.5 * self.goal_reward
+            self.reward = -100.0  # Fixed penalty
             self.info["out_of_bounds"] = True
             self.termination |= True
 

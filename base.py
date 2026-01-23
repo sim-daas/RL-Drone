@@ -61,7 +61,7 @@ class Env(Aviary):
         # Initialize LiDAR parameters
         self.laser_range = 10.0  # Maximum range in meters
         self.laser_link_idx = self.find_laser_link()
-        self.num_rays = 60  # Number of laser rays (6° between each ray)
+        self.num_rays = 24  # 24 rays = 15° spacing for 360° coverage
         self.lidar_line_ids = [None] * self.num_rays  # Store line IDs for each ray
         
     def start(self, steps:int=20000):
