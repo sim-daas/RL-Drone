@@ -14,6 +14,7 @@ class Env(Aviary):
         wind_options: dict[str, Any] = {},
         rpm: int = 600,
         rl: bool = False,
+        track: bool = False,
     ):
         super().__init__(
             start_pos=np.array([[0, -2.0, 1.0]]),
@@ -35,6 +36,14 @@ class Env(Aviary):
         self.rotor_angles = np.zeros(len(self.visual_joints))
         self.VISUAL_RPM = rpm
         self.rl = rl
+        self.track = track
+        
+        # Camera tracking parameters
+        self.camera_step_counter = 0
+        self.camera_update_interval = 1  # Update every 6 steps for 30fps at 240Hz
+        self.camera_pos = np.array([0.0, 0.0, 0.0])  # Smoothed camera position
+        self.camera_target = np.array([0.0, 0.0, 0.0])  # Smoothed look-at target
+        self.camera_smoothing = 0.01  # Lower = smoother, higher = more responsive
         
         self.warehouse_id = self.loadURDF("converted_assets/planer.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
         self.loadURDF("converted_assets/shelves.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
@@ -64,6 +73,12 @@ class Env(Aviary):
         self.num_rays = 24  # 24 rays = 15° spacing for 360° coverage
         self.lidar_line_ids = [None] * self.num_rays  # Store line IDs for each ray
         
+        # Initialize camera position if tracking is enabled
+        if self.track:
+            drone_pos, drone_orn = self.drone.p.getBasePositionAndOrientation(self.drone.Id)
+            self.camera_pos = np.array(drone_pos) + np.array([-1.0, 0.0, 1.0])
+            self.camera_target = np.array(drone_pos)
+        
     def start(self, steps:int=20000):
         for i in range(steps):
             self.step()
@@ -75,6 +90,13 @@ class Env(Aviary):
             self.update_rotor_angles()
             if not self.rl:
                 lidar_data = self.get_lidar_reading(visualize=False)
+            
+            # Update camera tracking
+            if self.track:
+                self.camera_step_counter += 1
+                if self.camera_step_counter >= self.camera_update_interval:
+                    self.update_camera()
+                    self.camera_step_counter = 0
     
     def stop(self):
         self.disconnect()
@@ -94,6 +116,78 @@ class Env(Aviary):
             if b"visual_rotor" in joint_info[1]: 
                 visual_joints.append(i)
         return visual_joints
+    
+    def update_camera(self):
+        """Update camera position to track the drone with smooth interpolation"""
+        # Get drone position and orientation
+        drone_pos, drone_orn = self.drone.p.getBasePositionAndOrientation(self.drone.Id)
+        drone_pos = np.array(drone_pos)
+        
+        # Convert quaternion to Euler angles (roll, pitch, yaw)
+        drone_euler = self.drone.p.getEulerFromQuaternion(drone_orn)
+        yaw = drone_euler[2]  # Yaw angle (rotation around Z-axis)
+        
+        # Calculate camera position offset in drone's local frame
+        # Offset: -1 in X (behind drone), 0 in Y (centered), +1 in Z (above drone)
+        local_offset = np.array([3.0, 4, -0.5])
+        
+        # Rotate the X,Y offset by drone's yaw to get world frame offset
+        cos_yaw = np.cos(yaw)
+        sin_yaw = np.sin(yaw)
+        world_offset = np.array([
+            local_offset[0] * cos_yaw - local_offset[1] * sin_yaw,
+            local_offset[0] * sin_yaw + local_offset[1] * cos_yaw,
+            local_offset[2]  # Z offset stays the same (world frame up)
+        ])
+        
+        # Calculate target camera position (behind and above the drone)
+        target_cam_pos = drone_pos + world_offset
+        
+        # Smooth camera position using exponential smoothing
+        self.camera_pos = self.camera_pos + self.camera_smoothing * (target_cam_pos - self.camera_pos)
+        
+        # Calculate look-at target (point ahead of drone in its facing direction)
+        look_ahead_distance = 3.0
+        target_look_at = drone_pos + np.array([
+            look_ahead_distance * cos_yaw,
+            look_ahead_distance * sin_yaw,
+            drone_pos[2]  # Keep same height as drone
+        ])
+        
+        # Smooth look-at target
+        self.camera_target = self.camera_target + self.camera_smoothing * (target_look_at - self.camera_target)
+        
+        # PyBullet's resetDebugVisualizerCamera works by positioning the camera
+        # at spherical coordinates (distance, yaw, pitch) relative to a target point.
+        # We need to set the target to where we want to LOOK AT, and calculate
+        # the spherical coordinates from our desired camera position.
+        
+        # The target is what the camera looks at (point ahead of drone)
+        # The camera position is behind and above the drone
+        # We need to express camera position in spherical coords relative to target
+        
+        # Vector from target to camera (reverse of view direction)
+        cam_to_target = self.camera_target - self.camera_pos
+        distance = np.linalg.norm(cam_to_target)
+        
+        if distance > 0.001:
+            # Calculate yaw: angle in XY plane from target to camera
+            cam_yaw = np.degrees(np.arctan2(cam_to_target[1], cam_to_target[0]))
+            
+            # Calculate pitch: angle from horizontal plane
+            horizontal_dist = np.sqrt(cam_to_target[0]**2 + cam_to_target[1]**2)
+            cam_pitch = -np.degrees(np.arctan2(cam_to_target[2], horizontal_dist))
+            
+            # Set the debug camera
+            # cameraTargetPosition: where the camera looks at
+            # cameraDistance: distance from target to camera
+            # cameraYaw/Pitch: spherical angles from target to camera position
+            self.drone.p.resetDebugVisualizerCamera(
+                cameraDistance=distance,
+                cameraYaw=cam_yaw,
+                cameraPitch=cam_pitch,
+                cameraTargetPosition=self.camera_target.tolist()
+            )
 
     def find_laser_link(self):
         """Find the laser sensor link index"""

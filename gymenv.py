@@ -33,6 +33,7 @@ class GymEnv(gymnasium.Env):
         render_mode: None | Literal["human", "rgb_array"] = None,
         minvelocity: float = 0.2,
         rl: bool = True,
+        track: bool = False,
     ):
  
         """ ENVIRONMENT CONSTANTS """
@@ -52,6 +53,7 @@ class GymEnv(gymnasium.Env):
         self.agent_hz = agent_hz
         self.rl = rl
         self.max_altitude = 2.5  # Maximum altitude constraint (meters)
+        self.track = track
 
         """GYMNASIUM STUFF"""
         self.attitude_space = spaces.Box(
@@ -160,7 +162,7 @@ class GymEnv(gymnasium.Env):
         drone_options["camera_fps"] = int(120 / self.env_step_ratio)
 
         # init env
-        self.env = Env(rl=self.rl)
+        self.env = Env(rl=self.rl, track=self.track)
         self.env.loadURDF("models/cylinder.urdf", basePosition=self.goal_position, globalScaling=1, useFixedBase=True)
 
         if self.render_mode == "human":
@@ -186,7 +188,7 @@ class GymEnv(gymnasium.Env):
         current_position = self.env.state(0)[-1]
         self.previous_distance = np.linalg.norm(self.goal_position - current_position)
         self.initial_distance = self.previous_distance
-        self.max_steps = int(self.initial_distance / 1.7) * self.agent_hz
+        self.max_steps = int(self.initial_distance) * self.agent_hz * 2
 
     def compute_state(self) -> None:
         """Computes the state of the QuadX.
@@ -300,7 +302,7 @@ class GymEnv(gymnasium.Env):
             
             if delta > THRESHOLD:
                 # Moving toward goal - GOOD!
-                self.reward = 10.0 * delta
+                self.reward = 20.0 * delta
             elif delta <= -THRESHOLD:
                 # Moving away from goal - BAD!
                 self.reward = -0.1

@@ -41,7 +41,8 @@ def evaluate_model(model_path, stats_path=None, n_episodes=5, goal_position=[18.
             flight_dome_size=100.0,
             agent_hz=30,
             render_mode="human",  # Enable rendering for visualization
-            rl=False
+            rl=False,
+            track=True
         )
         return env
     
@@ -131,15 +132,15 @@ if __name__ == '__main__':
     import argparse
     
     parser = argparse.ArgumentParser(description='Evaluate trained SAC drone model')
-    parser.add_argument('--model', type=str, default='./logs/drone_sac_obstacle_avoidance/final_drone_sac_model',
+    parser.add_argument('--model', type=str, default='./logs/drone_sac_multi_goal/final_drone_sac_model',
                         help='Path to model checkpoint (.zip)')
-    parser.add_argument('--stats', type=str, default='./logs/drone_sac_obstacle_avoidance/final_vecnormalize_stats.pkl',
+    parser.add_argument('--stats', type=str, default='./logs/drone_sac_multi_goal/final_vec_normalize_stats.pkl',
                         help='Path to VecNormalize stats (.pkl)')
     parser.add_argument('--episodes', type=int, default=5,
                         help='Number of episodes to evaluate')
-    parser.add_argument('--goal-x', type=float, default=18.0,
+    parser.add_argument('--goal-x', type=float, default=5.0,
                         help='Goal X coordinate')
-    parser.add_argument('--goal-y', type=float, default=-5.0,
+    parser.add_argument('--goal-y', type=float, default=5.0,
                         help='Goal Y coordinate')
     parser.add_argument('--goal-z', type=float, default=1.0,
                         help='Goal Z coordinate')
