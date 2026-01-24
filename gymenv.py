@@ -275,7 +275,7 @@ class GymEnv(gymnasium.Env):
         - Hovering/minimal movement: -0.1
         - Collision: -100.0 (terminal)
         - Out of bounds: -100.0 (terminal)
-        - Goal success: +500.0 (terminal)
+        - Goal success: +700.0 (terminal)
         """
         # Check base termination conditions first (collision, out of bounds, max steps)
         self.compute_base_term_trunc_reward()
@@ -287,7 +287,7 @@ class GymEnv(gymnasium.Env):
         # Check for goal success (overrides progress reward)
         if not self.termination and not self.truncation:
             if current_distance <= self.goal_tolerance:
-                self.reward = 500.0  # Big positive reward for success
+                self.reward = 25 * self.initial_distance  # Big positive reward for success
                 self.info["env_complete"] = True
                 self.termination = True
                 return
@@ -295,14 +295,23 @@ class GymEnv(gymnasium.Env):
         # Progress-based reward (only if not terminated)
         if not self.termination and not self.truncation:
             delta = self.previous_distance - current_distance
-            THRESHOLD = 0.006  # 6mm threshold for meaningful movement
+            if current_distance < 1.5:
+                THRESHOLD = 0.006  # 6mm threshold for meaningful movement
+            else:
+                THRESHOLD = 0.001
             
             if delta > THRESHOLD:
                 # Moving toward goal - GOOD!
-                self.reward = 20.0 * delta
-            elif delta < -THRESHOLD:
+                if current_distance < 1.5:
+                    self.reward = 20.0 * delta
+                else:
+                    self.reward = 10.0 * delta
+            elif delta <= -THRESHOLD:
                 # Moving away from goal - BAD!
-                self.reward = -0.1
+                if current_distance < 1.5:
+                    self.reward = -0.2
+                else:
+                    self.reward = -0.1
             else:
                 # Hovering or minimal movement - BAD!
                 self.reward = -0.1

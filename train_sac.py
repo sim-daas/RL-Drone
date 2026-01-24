@@ -25,18 +25,22 @@ os.environ["MKL_NUM_THREADS"] = "1"
 torch.set_num_threads(1)
 
 
-def make_env(goal_position, rank, seed=0):
+def make_env(goal_positions, rank, seed=0):
     """
     Utility function for multiprocessed env.
     
     Args:
-        goal_position: Target position for the drone
+        goal_positions: List of goal positions to randomly sample from
         rank: Index of the subprocess
         seed: Random seed
     """
     def _init():
+        # Randomly select a goal for this episode
+        goal_idx = np.random.randint(0, len(goal_positions))
+        goal = goal_positions[goal_idx]
+        
         env = GymEnv(
-            goal_position=goal_position,
+            goal_position=goal,
             goal_tolerance=0.2,
             flight_dome_size=100.0,
             agent_hz=30,
@@ -91,11 +95,20 @@ def train():
     # =========================
     # CONFIGURATION
     # =========================
-    GOAL_POSITION = [18.0, -5.0, 1.0]  # Fixed goal position
-    LOG_DIR = "./logs/drone_sac_obstacle_avoidance/"
+    
+    # Define 10 goal positions for generalization
+    # x=18 (fixed), y ranging from -5 to 5 (even spacing), z=1 (fixed)
+    y_values = np.linspace(-5.0, 5.0, 10)
+    GOAL_POSITIONS = [[18.0, y, 1.0] for y in y_values]
+    
+    print(f"Training with {len(GOAL_POSITIONS)} goal positions:")
+    for i, goal in enumerate(GOAL_POSITIONS):
+        print(f"  Goal {i}: [{goal[0]:.1f}, {goal[1]:.2f}, {goal[2]:.1f}]")
+    
+    LOG_DIR = "./logs/drone_sac_multi_goal/"
     TENSORBOARD_LOG = "./logs/tensorboard/"
-    N_ENVS = 6  # Number of parallel environments (reduced for stability)
-    TOTAL_STEPS = 1_000_000  # 1 million timesteps
+    N_ENVS = 6  # Number of parallel environments
+    TOTAL_STEPS = 14_000_000  # 2 million timesteps (1M base + 1M additional)
     
     # SAC hyperparameters
     LEARNING_RATE = 3e-4
@@ -115,7 +128,7 @@ def train():
     print("🚁 RL DRONE OBSTACLE AVOIDANCE TRAINING")
     print("=" * 60)
     print(f"Algorithm: SAC (Soft Actor-Critic)")
-    print(f"Goal Position: {GOAL_POSITION}")
+    print(f"Goal Position: {GOAL_POSITIONS}")
     print(f"Parallel Environments: {N_ENVS}")
     print(f"Total Training Steps: {TOTAL_STEPS:,}")
     print(f"Device: CPU (optimized for MLP policy)")
@@ -126,8 +139,8 @@ def train():
     # =========================
     print(f"\\n🚀 Initializing {N_ENVS} parallel environments...")
     
-    # Create parallel environments
-    env_fns = [make_env(GOAL_POSITION, i) for i in range(N_ENVS)]
+    # Create parallel environments with random goal selection
+    env_fns = [make_env(GOAL_POSITIONS, i) for i in range(N_ENVS)]
     vec_env = SubprocVecEnv(env_fns)
     
     # =========================
