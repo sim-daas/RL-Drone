@@ -96,19 +96,29 @@ def train():
     # CONFIGURATION
     # =========================
     
-    # Define 10 goal positions for generalization
-    # x=18 (fixed), y ranging from -5 to 5 (even spacing), z=1 (fixed)
-    y_values = np.linspace(-5.0, 5.0, 10)
-    GOAL_POSITIONS = [[18.0, y, 1.0] for y in y_values]
+    # Define 10 diverse goal positions across the warehouse
+    # Spread across different x and y coordinates for better generalization
+    GOAL_POSITIONS = [
+        [8.0, 5.0, 1.0],    # Near warehouse entrance
+        [12.0, 5.0, 1.0],   # Middle-front area
+        [15.0, 5.0, 1.0],   # Right-front area
+        [19.0, 5.0, 1.0],   # Far right-front
+        [3.6, 14.0, 1.0],   # Left-back area
+        [7.6, 14.0, 1.0],   # Middle-back area
+        [18.0, 14.0, 1.0],  # Right-back area
+        [-10.0, 10.0, 1.0], # Outside left area
+        [-17.0, -10.0, 1.0],# Far outside left-front
+        [10.0, -22.0, 1.0], # Outside bottom area
+    ]
     
-    print(f"Training with {len(GOAL_POSITIONS)} goal positions:")
+    print(f"Training with {len(GOAL_POSITIONS)} diverse goal positions:")
     for i, goal in enumerate(GOAL_POSITIONS):
         print(f"  Goal {i}: [{goal[0]:.1f}, {goal[1]:.2f}, {goal[2]:.1f}]")
     
     LOG_DIR = "./logs/drone_sac_multi_goal/"
     TENSORBOARD_LOG = "./logs/tensorboard/"
     N_ENVS = 6  # Number of parallel environments
-    TOTAL_STEPS = 14_000_000  # 2 million timesteps (1M base + 1M additional)
+    TOTAL_STEPS = 9_000_000  # 2 million timesteps (1M base + 1M additional)
     
     # SAC hyperparameters
     LEARNING_RATE = 3e-4

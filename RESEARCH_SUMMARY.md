@@ -38,8 +38,54 @@
 
 ### Iteration 5 (Phase 2): Progress Rewards ✅ **SUCCESS!**
 - **Changes:** +20 × delta for progress, -0.1 for hovering
-- **Result:** **100% success!**
+- **Result:** **100% success!** Single goal navigation mastered
 - **Lesson:** Progress incentives are essential
+
+### Iteration 6 (Phase 3): Multi-Goal + Distance-Dependent Rewards ⚠️ **MIXED**
+
+**Changes:**
+- **10 goal positions:** x=18, y∈[-5, 5] (even spacing), z=1
+- **Random goal per episode** for generalization
+- **Distance-dependent rewards:**
+  - Near goal (<1.5m): 30× reward, 0.006m threshold, -0.01 penalty
+  - Far from goal (≥1.5m): 20× reward, 0.001m threshold, -0.1 penalty
+
+**Results (6M total steps):**
+- ✅ **Excellent generalization** across different y-positions
+- ✅ **Fast navigation** - drone reaches goals efficiently
+- ⚠️ **Worse near-goal precision** compared to Phase 2
+- ⚠️ **Trade-off discovered:** Complex rewards help one aspect, hurt another
+
+**Analysis:**
+
+**What Worked:**
+- Multi-goal training successful - generalizes well
+- Fast reaching behavior maintained
+- No catastrophic forgetting from Phase 2
+
+**What Regressed:**
+- Near-goal precision decreased
+- Distance-dependent rewards added complexity
+- Fine-tuning near goal became harder (smaller penalty = less deterrent)
+
+**Root Cause:**
+```
+Phase 2 (simple, uniform):
+- Consistent incentive structure everywhere
+- Agent learned precise positioning
+
+Phase 3 (complex, distance-dependent):
+- Different rules near vs far from goal
+- Agent confused about final positioning
+- Smaller penalty (-0.01) insufficient deterrent near goal
+```
+
+**Lessons Learned:**
+1. ❌ **Complexity doesn't always help** - simpler may be better
+2. ⚠️ **Trade-offs exist** - optimizing for one metric can hurt another
+3. ✅ **Multi-goal training works** - good foundation for generalization
+4. 🔄 **Consider reverting** to uniform rewards (Phase 2 style)
+5. 💡 **Alternative:** Reduce both positive and negative rewards near goal (symmetrical)
 
 ---
 
@@ -145,25 +191,136 @@ AGENT_HZ = 30Hz
 ## Training Timeline
 
 - **Phase 1**: 1M steps → Stability (0% success → stable hovering)
-- **Phase 2**: 1M steps → **Navigation mastered (100% success)**
-- **Total**: 2M steps from scratch to mastery
+- **Phase 2**: 1M steps → Single-goal mastery (100% success)
+- **Phase 3**: 4M steps → Multi-goal generalization (good coverage, reduced precision)
+- **Total**: 6M steps from scratch to multi-goal navigation
+
+---
+
+## Future Directions
+
+### **Phase 4 Recommendations** (Based on Phase 3 Observations)
+
+**Problem:** Distance-dependent rewards caused worse near-goal precision despite better generalization
+
+#### **Option A - Revert to Uniform Rewards** ⭐ **RECOMMENDED**
+```python
+# Simple, consistent everywhere (Phase 2 style)
+delta = previous_distance - current_distance
+THRESHOLD = 0.006  # Same threshold everywhere
+
+if delta > THRESHOLD:
+    reward = 20.0 * delta  # Uniform scaling
+elif delta < -THRESHOLD:
+    reward = -0.1  # Uniform penalty
+else:
+    reward = -0.1  # Hovering penalty
+```
+**Pros:** ✅ Simpler, ✅ Proven in Phase 2, ✅ Better precision  
+**Cons:** ⚠️ May need more exploration far from goal
+
+#### **Option B - Symmetrical Reduction Near Goal**
+```python
+if current_distance < 1.5:
+    # Reduce BOTH rewards and penalties proportionally
+    progress_reward = 10.0 * delta  # Half of normal
+    retreat_penalty = -0.05  # Half of normal
+else:
+    progress_reward = 20.0 * delta
+    retreat_penalty = -0.1
+```
+**Pros:** ✅ Maintains distance awareness, ✅ More balanced  
+**Cons:** ⚠️ Still complex, ⚠️ Unproven
+
+#### **Option C - Dynamic Episode Duration** 🚀 **USER SUGGESTED**
+```python
+# Adaptive timeout based on initial distance
+self.max_duration = self.initial_distance / 2  # seconds
+# Example: 18m distance → 9 second timeout
+#          25m distance → 12.5 second timeout
+```
+**Pros:** ✅ Adaptive, ✅ Efficient, ✅ Scales with difficulty  
+**Cons:** ⚠️ May be too aggressive for obstacle-heavy paths  
+**Mitigation:** Use factor between 0.5-0.75 for more tolerance
+
+#### **Option D - Diverse 2D Goal Distribution** 🎯 **USER SUGGESTED**
+```python
+# Not just single line (y-axis), but 2D distribution
+GOAL_POSITIONS = [
+    [x, y, 1.0] 
+    for x in [15, 18, 21]  # 3 x-values
+    for y in [-5, -2, 0, 2, 5]  # 5 y-values
+]  # Total: 15 goals across x-y plane
+```
+**Pros:** ✅ Better generalization, ✅ More robust, ✅ Tests diverse paths  
+**Cons:** ⚠️ Longer training time needed
+
+---
+
+### **Recommended Phase 4 Configuration**
+
+**Combine best practices from all phases:**
+
+1. **Rewards:** Revert to uniform Phase 2 system (Option A)
+2. **Goals:** 2D distribution (Option D) - 15-20 diverse positions
+3. **Duration:** Dynamic timeout (Option C) with `max_duration = initial_distance / 1.5`
+4. **Training:** 2-3M steps with simplified setup
+
+**Expected Code Changes:**
+```python
+# train_sac.py / gymenv.py
+GOAL_POSITIONS = [
+    [x, y, 1.0] 
+    for x in [15.0, 18.0, 21.0]
+    for y in np.linspace(-5, 5, 6)  # 6 y-values per x
+]  # 18 total goals
+
+# gymenv.py - __init__
+self.initial_distance = np.linalg.norm(self.goal_position - start_pos)
+self.max_duration = self.initial_distance / 1.5  # Adaptive
+self.max_steps = int(self.max_duration * self.agent_hz)
+
+# gymenv.py - reward function (revert to Phase 2)
+delta = self.previous_distance - current_distance
+THRESHOLD = 0.006
+
+if delta > THRESHOLD:
+    self.reward = 20.0 * delta
+elif delta < -THRESHOLD:
+    self.reward = -0.1
+else:
+    self.reward = -0.1
+```
+
+**Expected Outcomes:**
+- ✅ Regain Phase 2 precision
+- ✅ Maintain Phase 3 generalization
+- ✅ Faster training with adaptive timeouts
+- ✅ Robust policy across diverse x-y positions
 
 ---
 
 ## Conclusion
 
-**Successful autonomous drone navigation** achieved through:
-1. ✅ Proper control design (Mode 6 with yaw)
-2. ✅ Efficient observation space (50 dims, 24 lidar rays)
-3. ✅ Progress-based reward engineering
-4. ✅ Two-phase training approach
+**Journey Summary:**
+- **Iterations 1-3:** Learning control fundamentals (2M+ failed attempts)
+- **Phase 1 (Iteration 4):** Achieved stability (1M steps)
+- **Phase 2 (Iteration 5):** **Breakthrough** - mastered single-goal (1M steps, 100% success)
+- **Phase 3 (Iteration 6):** Multi-goal generalization (4M steps, trade-offs discovered)
 
-**The breakthrough:** Adding `+20 × delta` progress reward transformed a stable but passive policy into an active, goal-seeking navigation system with 100% success rate.
+**Key Discovery:** **Simpler is often better** - Phase 2's uniform rewards outperformed Phase 3's complex distance-dependent system for precision, while multi-goal training successfully improved generalization.
 
-**Future work:** Curriculum learning for varying goals, multi-waypoint navigation, dynamic obstacles.
+**Current Status:** 
+- ✅ Good generalization across y-positions
+- ✅ Fast navigation speed
+- ⚠️ Needs precision improvement near goal
+
+**Next Phase:** Combine Phase 2 simplicity + Phase 3 diversity + new features (dynamic duration, 2D goals) for robust, general-purpose navigation
 
 ---
 
 *Framework: PyFlyt + SAC + Stable Baselines3*  
-*Training: AMD EPYC CPU, 6 parallel environments*  
+*Training: 6M steps total across 3 phases*  
+*Hardware: AMD EPYC CPU, 6 parallel environments*  
 *Date: January 2026*
+

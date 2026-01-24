@@ -186,6 +186,7 @@ class GymEnv(gymnasium.Env):
         current_position = self.env.state(0)[-1]
         self.previous_distance = np.linalg.norm(self.goal_position - current_position)
         self.initial_distance = self.previous_distance
+        self.max_steps = int(self.initial_distance / 1.7) * self.agent_hz
 
     def compute_state(self) -> None:
         """Computes the state of the QuadX.
@@ -295,23 +296,14 @@ class GymEnv(gymnasium.Env):
         # Progress-based reward (only if not terminated)
         if not self.termination and not self.truncation:
             delta = self.previous_distance - current_distance
-            if current_distance < 1.5:
-                THRESHOLD = 0.006  # 6mm threshold for meaningful movement
-            else:
-                THRESHOLD = 0.001
+            THRESHOLD = 0.006  # 6mm threshold for meaningful movement
             
             if delta > THRESHOLD:
                 # Moving toward goal - GOOD!
-                if current_distance < 1.5:
-                    self.reward = 20.0 * delta
-                else:
-                    self.reward = 10.0 * delta
+                self.reward = 10.0 * delta
             elif delta <= -THRESHOLD:
                 # Moving away from goal - BAD!
-                if current_distance < 1.5:
-                    self.reward = -0.2
-                else:
-                    self.reward = -0.1
+                self.reward = -0.1
             else:
                 # Hovering or minimal movement - BAD!
                 self.reward = -0.1
@@ -327,20 +319,20 @@ class GymEnv(gymnasium.Env):
 
         # Collision with any object
         if np.any(self.env.contact_array):
-            self.reward = -100.0  # Fixed penalty
+            self.reward = -10 * self.initial_distance  # Fixed penalty
             self.info["collision"] = True
             self.termination |= True
 
         # Exceed flight dome
         if np.linalg.norm(self.env.state(0)[-1]) > self.flight_dome_size:
-            self.reward = -100.0  # Fixed penalty
+            self.reward = -10 * self.initial_distance  # Fixed penalty
             self.info["out_of_bounds"] = True
             self.termination |= True
         
         # Exceed altitude ceiling (Z-ceiling constraint)
         current_position = self.env.state(0)[-1]
         if current_position[2] > self.max_altitude:
-            self.reward = -100.0  # Fixed penalty
+            self.reward = -10 * self.initial_distance  # Fixed penalty
             self.info["altitude_violation"] = True
             self.termination |= True
 
