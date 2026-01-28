@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<robot name="jetty_warehouse">
+  
+  <!-- Base link (world reference) -->
+  <link name="world"/>
+  
+  <!-- Distribution Warehouse -->
+  <link name="distribution_warehouse">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="/home/ubuntu/githubrepos/dronerlsim/models/models/distribution_warehouse/1/base_visual.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 6.096" rpy="0 0 0"/>
+      <geometry>
+        <box size="60.96 60.96 12.192"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="10000.0"/>
+      <origin xyz="0 0 6.096"/>
+      <inertia ixx="10000.0" ixy="0.0" ixz="0.0" iyy="10000.0" iyz="0.0" izz="10000.0"/>
+    </inertial>
+  </link>
+  
+  <joint name="world_to_warehouse" type="fixed">
+    <parent link="world"/>
+    <child link="distribution_warehouse"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  
+
+  
+</robot>
