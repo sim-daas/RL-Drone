@@ -137,7 +137,7 @@ def train():
     
     LOG_DIR = "./logs/drone_sac_multi_goal/"
     TENSORBOARD_LOG = "./logs/tensorboard/"
-    N_ENVS = 6  # Number of parallel environments
+    N_ENVS = 10  # Number of parallel environments
     TOTAL_STEPS = 10_000_000  # 2 million timesteps (1M base + 1M additional)
     
     # SAC hyperparameters
