@@ -82,7 +82,7 @@ def get_latest_checkpoint(log_dir):
     # Sort by step count (highest first)
     valid_checkpoints.sort(key=lambda x: x[2], reverse=True)
     latest_zip, latest_pkl, latest_steps = valid_checkpoints[0]
-    
+     
     print(f"✅ Found {len(valid_checkpoints)} valid pairs. Using:")
     print(f"   📦 Model: {os.path.basename(latest_zip)} ({latest_steps:,} steps)")
     print(f"   📊 Stats: {os.path.basename(latest_pkl)}")

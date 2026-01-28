@@ -27,7 +27,7 @@ class Env(Aviary):
         )
         
         self.configureDebugVisualizer(self.COV_ENABLE_GUI, 0)  # Hide GUI panels
-        self.configureDebugVisualizer(self.COV_ENABLE_SHADOWS, 0)
+        self.configureDebugVisualizer(self.COV_ENABLE_SHADOWS, 1 if not rl else 0)
 
         # set the flight mode
         self.set_mode(6)
@@ -45,25 +45,71 @@ class Env(Aviary):
         self.camera_target = np.array([0.0, 0.0, 0.0])  # Smoothed look-at target
         self.camera_smoothing = 0.01  # Lower = smoother, higher = more responsive
         
-        self.warehouse_id = self.loadURDF("converted_assets/planer.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-        self.loadURDF("converted_assets/shelves.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+        self.warehouse_id = self.loadURDF("converted_assets/planer.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+        # Darken the warehouse floor and environment
+        self.darken_object(self.warehouse_id, brightness_factor=0.4)
+        
+        shelves_id = self.loadURDF("converted_assets/shelves.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+        self.darken_object(shelves_id, brightness_factor=0.4)
+        
+        shelf_id = self.loadURDF("converted_assets/shelf.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+        self.darken_object(shelf_id, brightness_factor=0.4)
+        
+        pillar1_id = self.loadURDF("models/pillar.urdf", useFixedBase=True, globalScaling=1, basePosition=[6,-3,0.01])
+        self.darken_object(pillar1_id, brightness_factor=0.4)
+        
+        pillar2_id = self.loadURDF("models/pillar.urdf", useFixedBase=True, globalScaling=1, basePosition=[3,-6,0.01])
+        self.darken_object(pillar2_id, brightness_factor=0.4)
+#        self.loadURDF("models/sqpillar.urdf", useFixedBase=True, globalScaling=1, basePosition=[3,-6,0.01])
         if not rl:    
-            self.loadURDF("converted_assets/wall.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            self.loadURDF("converted_assets/cieling.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/column.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/rafter.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/metalstairs.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/black.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/blackpure.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/blank.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/bumper.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/container.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/containerfloor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/door.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/doorbase.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/glass.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/ramp.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-            # self.loadURDF("converted_assets/slidingdoor.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+            wall_id = self.loadURDF("converted_assets/wall.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            self.darken_object(wall_id, brightness_factor=0.4)
+            
+            ceiling_id = self.loadURDF("converted_assets/cieling.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # Make ceiling semi-transparent and darker
+            for i in range(-1, self.getNumJoints(ceiling_id)):
+                self.changeVisualShape(ceiling_id, i, rgbaColor=[0.4, 0.4, 0.4, 0.95])
+            
+            column_id = self.loadURDF("converted_assets/column.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            self.darken_object(column_id, brightness_factor=0.4)
+            # self.loadURDF("converted_assets/rafter.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            
+            # stairs_id = self.loadURDF("converted_assets/metalstairs.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(stairs_id, brightness_factor=0.4)
+            
+            # black_id = self.loadURDF("converted_assets/black.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # # self.darken_object(black_id, brightness_factor=0.4)
+            
+            # blackpure_id = self.loadURDF("converted_assets/blackpure.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # # self.darken_object(blackpure_id, brightness_factor=0.4)
+            
+            # blank_id = self.loadURDF("converted_assets/blank.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # # self.darken_object(blank_id, brightness_factor=0.4)
+            
+            # bumper_id = self.loadURDF("converted_assets/bumper.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(bumper_id, brightness_factor=0.4)
+            
+            # container_id = self.loadURDF("converted_assets/container.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(container_id, brightness_factor=0.4)
+            
+            # containerfloor_id = self.loadURDF("converted_assets/containerfloor.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(containerfloor_id, brightness_factor=0.4)
+            
+            
+            # door_id = self.loadURDF("converted_assets/door.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(door_id, brightness_factor=0.4)
+            
+            # doorbase_id = self.loadURDF("converted_assets/doorbase.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(doorbase_id, brightness_factor=0.4)
+            
+            # glass_id = self.loadURDF("converted_assets/glass.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # # self.darken_object(glass_id, brightness_factor=0.4)
+            
+            # ramp_id = self.loadURDF("converted_assets/ramp.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(ramp_id, brightness_factor=0.4)
+            
+            # slidingdoor_id = self.loadURDF("converted_assets/slidingdoor.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(slidingdoor_id, brightness_factor=0.4)
         
         self.register_all_new_bodies()
         
@@ -78,6 +124,28 @@ class Env(Aviary):
             drone_pos, drone_orn = self.drone.p.getBasePositionAndOrientation(self.drone.Id)
             self.camera_pos = np.array(drone_pos) + np.array([-1.0, 0.0, 1.0])
             self.camera_target = np.array(drone_pos)
+    
+    def darken_object(self, object_id, brightness_factor=0.6):
+        """
+        Darken an object by reducing its color brightness and reflectivity
+        brightness_factor: 0.0 (black) to 1.0 (original brightness)
+        """
+        # Iterate through all links including the base (-1)
+        num_joints = self.getNumJoints(object_id)
+        for link_idx in range(-1, num_joints):
+            try:
+                # Change visual properties to make it darker
+                # Reduce specular color to remove reflections (makes it less bright)
+                # Set RGBA to darker values
+                self.changeVisualShape(
+                    object_id, 
+                    link_idx, 
+                    specularColor=[0.1, 0.1, 0.1],  # Very low specular = less reflection
+                    rgbaColor=[brightness_factor, brightness_factor, brightness_factor, 1.0]  # Darker base color
+                )
+            except:
+                # Some links might not have visual shapes, skip them
+                pass
         
     def start(self, steps:int=20000):
         for i in range(steps):

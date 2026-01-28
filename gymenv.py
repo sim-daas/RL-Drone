@@ -210,7 +210,13 @@ class GymEnv(gymnasium.Env):
         
         # Get lidar readings
         lidar_data = self.env.get_lidar_reading(visualize=False)
-        lidar_distances = np.array(lidar_data['distances'], dtype=np.float64)
+        
+        # Handle case where lidar isn't initialized yet
+        if lidar_data is None or 'distances' not in lidar_data:
+            # Use max distance (10.0) for all 24 readings as default
+            lidar_distances = np.full(24, 10.0, dtype=np.float64)
+        else:
+            lidar_distances = np.array(lidar_data['distances'], dtype=np.float64)
         
         # Compute goal information: distance + normalized direction
         goal_vector = self.goal_position - lin_pos
