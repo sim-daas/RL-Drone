@@ -52,15 +52,15 @@ class Env(Aviary):
         shelves_id = self.loadURDF("converted_assets/shelves.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
         self.darken_object(shelves_id, brightness_factor=0.4)
         
-        shelf_id = self.loadURDF("converted_assets/shelf.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-        self.darken_object(shelf_id, brightness_factor=0.4)
+#         shelf_id = self.loadURDF("converted_assets/shelf.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
+#         self.darken_object(shelf_id, brightness_factor=0.4)
         
-        pillar1_id = self.loadURDF("models/pillar.urdf", useFixedBase=True, globalScaling=1, basePosition=[6,-3,0.01])
-        self.darken_object(pillar1_id, brightness_factor=0.4)
+#         pillar1_id = self.loadURDF("models/pillar.urdf", useFixedBase=True, globalScaling=1, basePosition=[6,-3,0.01])
+#         self.darken_object(pillar1_id, brightness_factor=0.4)
         
-        pillar2_id = self.loadURDF("models/pillar.urdf", useFixedBase=True, globalScaling=1, basePosition=[3,-6,0.01])
-        self.darken_object(pillar2_id, brightness_factor=0.4)
-#        self.loadURDF("models/sqpillar.urdf", useFixedBase=True, globalScaling=1, basePosition=[3,-6,0.01])
+#         pillar2_id = self.loadURDF("models/pillar.urdf", useFixedBase=True, globalScaling=1, basePosition=[3,-6,0.01])
+#         self.darken_object(pillar2_id, brightness_factor=0.4)
+# #        self.loadURDF("models/sqpillar.urdf", useFixedBase=True, globalScaling=1, basePosition=[3,-6,0.01])
         if not rl:    
             wall_id = self.loadURDF("converted_assets/wall.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
             self.darken_object(wall_id, brightness_factor=0.4)
