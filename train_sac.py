@@ -119,16 +119,7 @@ def train():
     # Define 10 diverse goal positions across the warehouse
     # Spread across different x and y coordinates for better generalization
     GOAL_POSITIONS = [
-        [8.0, 5.0, 1.0],    # Near warehouse entrance
-        [12.0, 5.0, 1.0],   # Middle-front area
-        [15.0, 5.0, 1.0],   # Right-front area
-        [19.0, 5.0, 1.0],   # Far right-front
-        [3.6, 14.0, 1.0],   # Left-back area
-        [7.6, 14.0, 1.0],   # Middle-back area
-        [18.0, 14.0, 1.0],  # Right-back area
-        [-10.0, 10.0, 1.0], # Outside left area
-        [-17.0, -10.0, 1.0],# Far outside left-front
-        [10.0, -22.0, 1.0], # Outside bottom area
+        [18.0, -5.0, 1.0],  # Right-back area
     ]
     
     print(f"Training with {len(GOAL_POSITIONS)} diverse goal positions:")
