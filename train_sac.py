@@ -20,9 +20,29 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from gymenv import GymEnv
 
 # OPTIMIZATION: Lock threads to prevent "core clashing" on CPU
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["MKL_NUM_THREADS"] = "1"
-torch.set_num_threads(1)
+# IMPORTANT: These settings are for SINGLE MACHINE with multiple parallel envs
+# For 64-core Xeon, allow more threads per environment for better CPU utilization
+
+import multiprocessing
+
+# Calculate optimal thread count per environment
+# Formula: total_cores / (n_envs * safety_factor)
+TOTAL_CORES = multiprocessing.cpu_count()
+N_ENVS = 4  # Will be defined later, but we need it here
+
+# On 64-core system with 30 envs: 64 / (30 * 1.2) = ~1.7 → use 2 threads/env
+# On 16-core system with 6 envs: 16 / (6 * 1.2) = ~2.2 → use 2 threads/env
+THREADS_PER_ENV = max(1, min(4, TOTAL_CORES // (N_ENVS * 2)))
+
+os.environ["OMP_NUM_THREADS"] = str(THREADS_PER_ENV)
+os.environ["MKL_NUM_THREADS"] = str(THREADS_PER_ENV)
+torch.set_num_threads(THREADS_PER_ENV)
+
+print(f"🔧 CPU Configuration:")
+print(f"   Total Cores: {TOTAL_CORES}")
+print(f"   Parallel Envs: {N_ENVS}")
+print(f"   Threads per Env: {THREADS_PER_ENV}")
+print(f"   Expected Core Usage: ~{N_ENVS * THREADS_PER_ENV}/{TOTAL_CORES}")
 
 
 def make_env(goal_positions, rank, seed=0):
@@ -118,7 +138,7 @@ def train():
     LOG_DIR = "./logs/drone_sac_multi_goal/"
     TENSORBOARD_LOG = "./logs/tensorboard/"
     N_ENVS = 6  # Number of parallel environments
-    TOTAL_STEPS = 9_000_000  # 2 million timesteps (1M base + 1M additional)
+    TOTAL_STEPS = 10_000_000  # 2 million timesteps (1M base + 1M additional)
     
     # SAC hyperparameters
     LEARNING_RATE = 3e-4

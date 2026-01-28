@@ -178,8 +178,9 @@ class GymEnv(gymnasium.Env):
         # set flight mode
         self.env.set_mode(self.flight_mode)
 
-        # wait for env to stabilize
-        for _ in range(10):
+        # wait for env to stabilize - REDUCED from 10 to 3 steps
+        # Physics usually stabilizes faster than we think
+        for _ in range(3):
             self.env.step()
 
         self.compute_state()
