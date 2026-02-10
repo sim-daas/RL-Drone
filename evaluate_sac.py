@@ -37,7 +37,7 @@ def evaluate_model(model_path, stats_path=None, n_episodes=5, goal_position=[18.
     def make_eval_env():
         env = GymEnv(
             goal_position=goal_position,
-            goal_tolerance=0.2,
+            goal_tolerance=0.5,
             flight_dome_size=100.0,
             agent_hz=30,
             render_mode="human",  # Enable rendering for visualization
