@@ -93,14 +93,14 @@ def train():
     # Phase 4A: Close goals (7-12m, 360° coverage)
     # UPDATE THESE after running: python visualize_goals.py
     GOAL_POSITIONS = [
-        [8.0, -0.5, 1.0],     # ~10m forward
-        # [5.0, 5.0, 1.0],     # ~9m forward-right
-        # [0.0, 8.0, 1.0],     # ~10m right
-        # [-5.0, 5.0, 1.0],    # ~9m back-right
-        [-8.0, -0.5, 1.0],    # ~10m behind
-        [-5.0, -5.0, 1.0],   # ~8m back-left
-        [5.0, -5.0, 1.0],    # ~8m forward-left
-        [0.0, -8.0, 1.0],    # ~10m left
+    [8.0, -1, 1.0],     # ~10m forward
+    [5.0, 5.0, 1.0],     # ~9m forward-right
+    [1.0, 8.0, 1.0],     # ~10m right
+    [-6.0, 5.0, 1.0],    # ~9m back-right
+    [-8.0, -0.5, 1.0],    # ~10m behind
+    [-8.0, -8.0, 1.0],   # ~8m back-left
+    [5.0, -5.0, 1.0],    # ~8m forward-left
+    [0.0, -8.0, 1.0],    # ~10m left
     ]
     
     print(f"Training with {len(GOAL_POSITIONS)} diverse goal positions:")
@@ -110,7 +110,7 @@ def train():
     LOG_DIR = "./logs/drone_sac_phase4a/"
     TENSORBOARD_LOG = "./logs/tensorboard/"
     N_ENVS = 24
-    TOTAL_STEPS = 4_000_000
+    TOTAL_STEPS = 7_000_000
     
     # SAC hyperparameters
     LEARNING_RATE = 3e-4
