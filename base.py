@@ -67,44 +67,46 @@ class Env(Aviary):
             
             column_id = self.loadURDF("converted_assets/column.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
             self.darken_object(column_id, brightness_factor=0.4)
-            # self.loadURDF("converted_assets/rafter.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            rafter_id = self.loadURDF("converted_assets/rafter.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            for i in range(-1, self.getNumJoints(rafter_id)):
+                self.changeVisualShape(rafter_id, i, rgbaColor=[0.4, 0.4, 0.4, 0.95])
             
-            # stairs_id = self.loadURDF("converted_assets/metalstairs.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # self.darken_object(stairs_id, brightness_factor=0.4)
+            stairs_id = self.loadURDF("converted_assets/metalstairs.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            self.darken_object(stairs_id, brightness_factor=0.4)
             
-            # black_id = self.loadURDF("converted_assets/black.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # # self.darken_object(black_id, brightness_factor=0.4)
+            black_id = self.loadURDF("converted_assets/black.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(black_id, brightness_factor=0.4)
             
-            # blackpure_id = self.loadURDF("converted_assets/blackpure.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # # self.darken_object(blackpure_id, brightness_factor=0.4)
+            blackpure_id = self.loadURDF("converted_assets/blackpure.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(blackpure_id, brightness_factor=0.4)
             
-            # blank_id = self.loadURDF("converted_assets/blank.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # # self.darken_object(blank_id, brightness_factor=0.4)
+            blank_id = self.loadURDF("converted_assets/blank.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(blank_id, brightness_factor=0.4)
             
-            # bumper_id = self.loadURDF("converted_assets/bumper.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # self.darken_object(bumper_id, brightness_factor=0.4)
+            bumper_id = self.loadURDF("converted_assets/bumper.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            self.darken_object(bumper_id, brightness_factor=0.4)
             
-            # container_id = self.loadURDF("converted_assets/container.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # self.darken_object(container_id, brightness_factor=0.4)
+            container_id = self.loadURDF("converted_assets/container.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            self.darken_object(container_id, brightness_factor=0.4)
             
-            # containerfloor_id = self.loadURDF("converted_assets/containerfloor.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # self.darken_object(containerfloor_id, brightness_factor=0.4)
+            containerfloor_id = self.loadURDF("converted_assets/containerfloor.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            self.darken_object(containerfloor_id, brightness_factor=0.4)
             
             
-            # door_id = self.loadURDF("converted_assets/door.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # self.darken_object(door_id, brightness_factor=0.4)
+            door_id = self.loadURDF("converted_assets/door.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            self.darken_object(door_id, brightness_factor=0.4)
             
-            # doorbase_id = self.loadURDF("converted_assets/doorbase.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # self.darken_object(doorbase_id, brightness_factor=0.4)
+            doorbase_id = self.loadURDF("converted_assets/doorbase.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            self.darken_object(doorbase_id, brightness_factor=0.4)
             
-            # glass_id = self.loadURDF("converted_assets/glass.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # # self.darken_object(glass_id, brightness_factor=0.4)
+            glass_id = self.loadURDF("converted_assets/glass.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            # self.darken_object(glass_id, brightness_factor=0.4)
             
-            # ramp_id = self.loadURDF("converted_assets/ramp.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # self.darken_object(ramp_id, brightness_factor=0.4)
+            ramp_id = self.loadURDF("converted_assets/ramp.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            self.darken_object(ramp_id, brightness_factor=0.4)
             
-            # slidingdoor_id = self.loadURDF("converted_assets/slidingdoor.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            # self.darken_object(slidingdoor_id, brightness_factor=0.4)
+            slidingdoor_id = self.loadURDF("converted_assets/slidingdoor.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+            self.darken_object(slidingdoor_id, brightness_factor=0.4)
         
         self.register_all_new_bodies()
         

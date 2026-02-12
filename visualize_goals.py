@@ -8,14 +8,16 @@ import time
 # EDIT THESE GOAL POSITIONS
 # ============================
 GOALS = [
-    [8.0, -1, 1.0],     # ~10m forward
-    [5.0, 5.0, 1.0],     # ~9m forward-right
-    [1.0, 8.0, 1.0],     # ~10m right
-    [-6.0, 5.0, 1.0],    # ~9m back-right
-    [-8.0, -0.5, 1.0],    # ~10m behind
-    [-8.0, -8.0, 1.0],   # ~8m back-left
-    [5.0, -5.0, 1.0],    # ~8m forward-left
-    [0.0, -8.0, 1.0],    # ~10m left
+    [18.0, -5, 1.0],     # ~10m forward
+    [18.0, 1.0, 1.0],     # ~9m forward-right
+    # [8.0, -1, 1.0],     # ~10m forward
+    # [5.0, 5.0, 1.0],     # ~9m forward-right
+    # [1.0, 8.0, 1.0],     # ~10m right
+    # [-6.0, 5.0, 1.0],    # ~9m back-right
+    # [-8.0, -0.5, 1.0],    # ~10m behind
+    # [-8.0, -8.0, 1.0],   # ~8m back-left
+    # [5.0, -5.0, 1.0],    # ~8m forward-left
+    # [0.0, -8.0, 1.0],    # ~10m left
 ]
 
 env = Env(rl=False, track=False)
