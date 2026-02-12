@@ -19,52 +19,25 @@ import numpy as np
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from gymenv import GymEnv
 
-# OPTIMIZATION: Lock threads to prevent "core clashing" on CPU
-# IMPORTANT: These settings are for SINGLE MACHINE with multiple parallel envs
-# For 64-core Xeon, allow more threads per environment for better CPU utilization
-
-import multiprocessing
-
-# Calculate optimal thread count per environment
-# Formula: total_cores / (n_envs * safety_factor)
-TOTAL_CORES = multiprocessing.cpu_count()
-N_ENVS = 4  # Will be defined later, but we need it here
-
-# On 64-core system with 30 envs: 64 / (30 * 1.2) = ~1.7 → use 2 threads/env
-# On 16-core system with 6 envs: 16 / (6 * 1.2) = ~2.2 → use 2 threads/env
-THREADS_PER_ENV = max(1, min(4, TOTAL_CORES // (N_ENVS * 2)))
-
-os.environ["OMP_NUM_THREADS"] = str(THREADS_PER_ENV)
-os.environ["MKL_NUM_THREADS"] = str(THREADS_PER_ENV)
-torch.set_num_threads(THREADS_PER_ENV)
-
-print(f"🔧 CPU Configuration:")
-print(f"   Total Cores: {TOTAL_CORES}")
-print(f"   Parallel Envs: {N_ENVS}")
-print(f"   Threads per Env: {THREADS_PER_ENV}")
-print(f"   Expected Core Usage: ~{N_ENVS * THREADS_PER_ENV}/{TOTAL_CORES}")
+# Lock to 1 thread per env to prevent core clashing
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+torch.set_num_threads(1)
 
 
 def make_env(goal_positions, rank, seed=0):
     """
     Utility function for multiprocessed env.
-    
-    Args:
-        goal_positions: List of goal positions to randomly sample from
-        rank: Index of the subprocess
-        seed: Random seed
+    Goal is randomized per episode inside GymEnv.reset().
     """
     def _init():
-        # Randomly select a goal for this episode
-        goal_idx = np.random.randint(0, len(goal_positions))
-        goal = goal_positions[goal_idx]
-        
         env = GymEnv(
-            goal_position=goal,
+            goal_position=goal_positions[0],  # Initial goal (overridden each reset)
+            goal_positions=goal_positions,    # Full list for per-episode randomization
             goal_tolerance=0.2,
             flight_dome_size=100.0,
             agent_hz=30,
-            render_mode=None  # No rendering during training
+            render_mode=None
         )
         env = Monitor(env)
         env.reset(seed=seed + rank)
@@ -116,10 +89,18 @@ def train():
     # CONFIGURATION
     # =========================
     
-    # Define 10 diverse goal positions across the warehouse
-    # Spread across different x and y coordinates for better generalization
+    # 10 diverse goal positions across the warehouse
     GOAL_POSITIONS = [
-        [18.0, -5.0, 1.0],  # Right-back area
+        [8.0, 5.0, 1.0],
+        [12.0, 5.0, 1.0],
+        [15.0, 5.0, 1.0],
+        [19.0, 5.0, 1.0],
+        [3.6, 14.0, 1.0],
+        [7.6, 14.0, 1.0],
+        [18.0, 14.0, 1.0],
+        [-10.0, 10.0, 1.0],
+        [-17.0, -10.0, 1.0],
+        [10.0, -22.0, 1.0],
     ]
     
     print(f"Training with {len(GOAL_POSITIONS)} diverse goal positions:")
@@ -128,8 +109,8 @@ def train():
     
     LOG_DIR = "./logs/drone_sac_multi_goal/"
     TENSORBOARD_LOG = "./logs/tensorboard/"
-    N_ENVS = 10  # Number of parallel environments
-    TOTAL_STEPS = 10_000_000  # 2 million timesteps (1M base + 1M additional)
+    N_ENVS = 22
+    TOTAL_STEPS = 2_000_000
     
     # SAC hyperparameters
     LEARNING_RATE = 3e-4

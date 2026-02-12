@@ -26,6 +26,7 @@ class GymEnv(gymnasium.Env):
     def __init__(
         self,
         goal_position: np.ndarray | list,
+        goal_positions: list | None = None,
         goal_tolerance: float = 0.2,
         flight_mode: int = 6,
         flight_dome_size: float = 10.0,
@@ -38,6 +39,7 @@ class GymEnv(gymnasium.Env):
  
         """ ENVIRONMENT CONSTANTS """
         self.goal_position = np.array(goal_position, dtype=np.float64)
+        self.goal_positions = goal_positions  # List of goals for per-episode randomization
         self.goal_tolerance = goal_tolerance
         self.render_mode = render_mode
         self.render_resolution = (480, 480)
@@ -120,6 +122,11 @@ class GymEnv(gymnasium.Env):
             tuple[Any, dict[str, Any]]:
 
         """
+        # Randomize goal each episode if goal_positions provided
+        if self.goal_positions is not None and len(self.goal_positions) > 0:
+            idx = np.random.randint(0, len(self.goal_positions))
+            self.goal_position = np.array(self.goal_positions[idx], dtype=np.float64)
+        
         self.begin_reset(seed=seed, options=options)
         self.end_reset(seed=seed, options=options)
         
@@ -189,7 +196,7 @@ class GymEnv(gymnasium.Env):
         current_position = self.env.state(0)[-1]
         self.previous_distance = np.linalg.norm(self.goal_position - current_position)
         self.initial_distance = self.previous_distance
-        self.max_steps = int(self.initial_distance) * self.agent_hz * 2
+        self.max_steps = int(self.initial_distance * 1.2) * self.agent_hz
 
     def compute_state(self) -> None:
         """Computes the state of the QuadX.
@@ -277,16 +284,6 @@ class GymEnv(gymnasium.Env):
         return ang_vel, ang_pos, lin_vel, lin_pos, quaternion
 
     def compute_term_trunc_reward(self) -> None:
-        """Compute termination, truncation, and reward.
-        
-        Progress-Based Reward Function (Phase 2):
-        - Moving toward goal (delta > 0.006m): +20.0 * delta
-        - Moving away (delta < -0.006m): -0.1
-        - Hovering/minimal movement: -0.1
-        - Collision: -100.0 (terminal)
-        - Out of bounds: -100.0 (terminal)
-        - Goal success: +700.0 (terminal)
-        """
         # Check base termination conditions first (collision, out of bounds, max steps)
         self.compute_base_term_trunc_reward()
         

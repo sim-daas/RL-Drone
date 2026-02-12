@@ -45,16 +45,14 @@ class Env(Aviary):
         self.camera_target = np.array([0.0, 0.0, 0.0])  # Smoothed look-at target
         self.camera_smoothing = 0.1  # Lower = smoother, higher = more responsive
         
+        # Load the warehouse environment
         self.warehouse_id = self.loadURDF("converted_assets/planer.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-        # Darken the warehouse floor and environment
         self.darken_object(self.warehouse_id, brightness_factor=0.4)
-        
-        
-#         shelf_id = self.loadURDF("converted_assets/shelf.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
-#         self.darken_object(shelf_id, brightness_factor=0.4)
-        
         shelves_id = self.loadURDF("converted_assets/shelves.urdf", useFixedBase=True, globalScaling=1, basePosition=[0,0,0.01])
         self.darken_object(shelves_id, brightness_factor=0.4)
+        wall_id = self.loadURDF("converted_assets/wall.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
+        self.darken_object(wall_id, brightness_factor=0.4)
+        
         # pillar1_id = self.loadURDF("models/pillar.urdf", useFixedBase=True, globalScaling=1, basePosition=[6,-3,0.01])
         # self.darken_object(pillar1_id, brightness_factor=0.4)
         
@@ -62,9 +60,6 @@ class Env(Aviary):
         # self.darken_object(pillar2_id, brightness_factor=0.4)
         # self.loadURDF("models/sqpillar.urdf", useFixedBase=True, globalScaling=1, basePosition=[7,-2,0.01])
         if not rl:    
-            wall_id = self.loadURDF("converted_assets/wall.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
-            self.darken_object(wall_id, brightness_factor=0.4)
-            
             ceiling_id = self.loadURDF("converted_assets/cieling.urdf", useFixedBase=True, globalScaling=0.8, basePosition=[0,0,0.01])
             # Make ceiling semi-transparent and darker
             for i in range(-1, self.getNumJoints(ceiling_id)):
