@@ -87,7 +87,88 @@ Phase 3 (complex, distance-dependent):
 4. 🔄 **Consider reverting** to uniform rewards (Phase 2 style)
 5. 💡 **Alternative:** Reduce both positive and negative rewards near goal (symmetrical)
 
+### Iteration 7 (Phase 4): Diverse 2D Goals ❌ **REGRESSION**
+
+**Changes:**
+- **Reverted to uniform Phase 2 rewards** (20× delta, 0.006m threshold, -0.1 penalty)
+- **10 diverse goals** across 36m × 36m area (not single line)
+- **Per-episode goal randomization** in GymEnv.reset()
+- **Dynamic max_steps:** `distance × 1.2 × 30Hz`
+- **Dynamic terminal rewards:** ±proportional to initial_distance
+- **6 parallel envs, 1 thread each**
+
+**Results (2-3M steps from Phase 3 checkpoint):**
+
+| Metric | Result |
+|--------|--------|
+| **Navigation** | ❌ Random smooth movement, no goal alignment |
+| **Collision avoidance** | ✅ Preserved (smooth, stable flight) |
+| **Altitude hold** | ✅ Preserved |
+| **Mean reward** | 0 to +100 (never reaching goals) |
+| **Episode length** | ~500 steps (constant, never shortening) |
+| **Goal independence** | Same random behavior for opposite-direction goals |
+
+**TensorBoard Analysis:**
+- Mean episode length: ~500 steps, no improvement over training
+- Mean reward: Increased slightly in first 1.5M steps to positive
+- After 1.5M: Plateaued between 0-100, slight increase after 2.5M (max ~150)
+- No goal-reaching events observed
+
+**Root Cause: Too Much Diversity, Too Fast**
+```
+Phase 2 model: Learned ONE path (start → [18, -5, 1])
+Phase 4 goals: 10 positions spanning 36m × 36m, including OPPOSITE directions
+
+Agent's response:
+- "I know how to hover safely" ✅ (preserved)
+- "I don't know where ANY of these goals are" ❌ (overwhelmed)
+- Falls back to safe hovering behavior
+```
+
+**Key distances showing the problem:**
+
+| Goal | Direction | Distance |
+|------|-----------|----------|
+| `[8, 5]` | Forward-right | ~11m |
+| `[-17, -10]` | Behind-left | ~20m |
+| `[10, -22]` | Right-far behind | ~22m |
+| `[18, 14]` | Forward-far right | ~28m |
+
+**Lessons Learned:**
+1. ❌ **Diverse goals can't be introduced all at once** from a single-goal policy
+2. ❌ **More training won't fix this** — task distribution is the bottleneck, not training time
+3. ✅ **Stability/collision avoidance is robust** — survives major goal changes
+4. 💡 **Curriculum learning is essential** — gradual difficulty increase needed
+5. 💡 **Start with close, multi-directional goals** before extending range
+
 ---
+
+## Curriculum Learning Plan (Phase 4A → 4B → 4C)
+
+### Phase 4A: Close Goals (7-12m, 360° coverage)
+```python
+# 8 goals in a ring around start position
+PHASE_A_GOALS = [
+    [8.0, 0.0, 1.0],     # ~10m forward
+    [5.0, 5.0, 1.0],     # ~9m forward-right
+    [0.0, 8.0, 1.0],     # ~10m right
+    [-5.0, 5.0, 1.0],    # ~9m back-right
+    [-8.0, 0.0, 1.0],    # ~10m behind
+    [-5.0, -5.0, 1.0],   # ~8m back-left
+    [5.0, -5.0, 1.0],    # ~8m forward-left
+    [0.0, -8.0, 1.0],    # ~10m left
+]
+```
+**Goal:** Learn goal-directed flight in ANY direction  
+**Train:** 2-3M steps | **Target:** >80% success
+
+### Phase 4B: Medium Goals (12-18m)
+Mix of close + medium goals  
+**Train:** 2-3M steps | **Target:** >70% success
+
+### Phase 4C: Full Range (18-28m)
+All original diverse goals  
+**Train:** 2-3M steps | **Target:** >60% success
 
 ## Key Technical Decisions
 
