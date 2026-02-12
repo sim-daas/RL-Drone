@@ -196,7 +196,7 @@ class GymEnv(gymnasium.Env):
         current_position = self.env.state(0)[-1]
         self.previous_distance = np.linalg.norm(self.goal_position - current_position)
         self.initial_distance = self.previous_distance
-        self.max_steps = int(self.initial_distance * 1.2) * self.agent_hz
+        self.max_steps = int(self.initial_distance * 1.8) * self.agent_hz
 
     def compute_state(self) -> None:
         """Computes the state of the QuadX.
