@@ -109,8 +109,8 @@ def train():
     
     LOG_DIR = "./logs/drone_sac_phase4a/"
     TENSORBOARD_LOG = "./logs/tensorboard/"
-    N_ENVS = 6
-    TOTAL_STEPS = 2_000_000
+    N_ENVS = 24
+    TOTAL_STEPS = 4_000_000
     
     # SAC hyperparameters
     LEARNING_RATE = 3e-4
