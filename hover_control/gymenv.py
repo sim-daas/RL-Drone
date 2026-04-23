@@ -173,15 +173,16 @@ class GymEnv(gymnasium.Env):
         # Then subtract 1 to get the range [-1, 0]
         reward_pos = np.exp(-self.alpha * (pos_error_norm**2)) - 1.0
         
-        # 2. Velocity Reward
-        # reward = 0 if velocity is 0, negative if non-zero, range [-1, 0]
+        # 2. Velocity Penalty Scaling
+        # Penalty spikes as we get closer to the goal
+        # As pos_error_norm -> 0, proximity_factor -> 1.0
+        # As pos_error_norm increases, proximity_factor decreases
+        proximity_factor = np.exp(-2.0 * pos_error_norm) 
+        
         lin_vel_norm = np.linalg.norm(self.state[7:10])
         ang_vel_norm = np.linalg.norm(self.state[10:13])
         
-        # Combine linear and angular velocity for the penalty
-        # w_vel controls the sensitivity/sharpness of the penalty
-        total_vel_sq = lin_vel_norm**2 + 0.1 * ang_vel_norm**2
-        reward_vel = np.exp(-self.w_vel * total_vel_sq) - 1.0
+        reward_vel = -self.w_vel * proximity_factor * (lin_vel_norm**2 + 0.1 * ang_vel_norm**2)
         
         # 3. Upright Penalty
         rot_mat = np.array(p.getMatrixFromQuaternion(self.state[3:7])).reshape(3, 3)
