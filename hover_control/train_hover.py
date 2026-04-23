@@ -76,7 +76,7 @@ def train():
     
     LOG_DIR = "./logs/hover_sac_v1/"
     TENSORBOARD_LOG = "./logs/tensorboard_hover/"
-    N_ENVS = 24
+    N_ENVS = 48
     TOTAL_STEPS = 1_000_000
     
     # SAC hyperparameters
