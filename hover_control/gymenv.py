@@ -47,7 +47,7 @@ class GymEnv(gymnasium.Env):
         self.track = track
 
         # Curriculum and Reward parameters
-        self.alpha = 1.0
+        self.alpha = 0.5
         self.alpha_final = 10.0  # Steeper gradient at the end
         self.curriculum_steps = 500_000  # Reach max sharpness after this many steps
         self.total_env_steps = 0
@@ -171,7 +171,7 @@ class GymEnv(gymnasium.Env):
         pos_error_norm = np.linalg.norm(self.state[0:3])
         # Gaussian reward centered at 0, ranging from 0 (far) to 1 (at goal)
         # Then subtract 1 to get the range [-1, 0]
-        reward_pos = np.exp(-self.alpha * (pos_error_norm**2)) - 1.0
+        reward_pos = -(self.alpha * (pos_error_norm**2))
         
         # 2. Velocity Penalty Scaling
         # Penalty spikes as we get closer to the goal
