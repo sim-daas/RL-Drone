@@ -15,7 +15,7 @@ class Env(Aviary):
         track: bool = False,
     ):
         super().__init__(
-            start_pos=np.array([[0, -2.0, 1.0]]),
+            start_pos=np.array([[0, 0.0, 2.0]]),
             start_orn=np.array([[0.0, 0.0, 0.0]]),
             render=not rl,  # Disable rendering during RL training for speed
             drone_type="quadx",

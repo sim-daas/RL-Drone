@@ -23,8 +23,6 @@ class GymEnv(gymnasium.Env):
     '''
     def __init__(
         self,
-        goal_position: np.ndarray | list,
-        goal_positions: list | None = None,
         goal_tolerance: float = 0.2,
         flight_mode: int = 0,
         flight_dome_size: float = 10.0,
@@ -35,8 +33,7 @@ class GymEnv(gymnasium.Env):
     ):
  
         """ ENVIRONMENT CONSTANTS """
-        self.goal_position = np.array(goal_position, dtype=np.float64)
-        self.goal_positions = goal_positions
+        self.goal_position = np.array([0.0, 0.0, 2.0], dtype=np.float64)
         self.goal_tolerance = goal_tolerance
         self.render_mode = render_mode
         self.render_resolution = (480, 480)
@@ -91,10 +88,6 @@ class GymEnv(gymnasium.Env):
     def reset(
         self, *, seed: None | int = None, options: dict[str, Any] | None = dict()
     ) -> tuple[Any, dict[str, Any]]:
-        if self.goal_positions is not None and len(self.goal_positions) > 0:
-            idx = np.random.randint(0, len(self.goal_positions))
-            self.goal_position = np.array(self.goal_positions[idx], dtype=np.float64)
-        
         self.begin_reset(seed=seed, options=options)
         self.end_reset(seed=seed, options=options)
         
@@ -123,7 +116,7 @@ class GymEnv(gymnasium.Env):
         self.error_buffer.clear()
 
         self.env = Env(rl=self.rl, track=self.track)
-        self.env.loadURDF("models/cylinder.urdf", basePosition=self.goal_position, globalScaling=1, useFixedBase=True)
+        # self.env.loadURDF("models/cylinder.urdf", basePosition=self.goal_position, globalScaling=1, useFixedBase=True)
 
         if self.render_mode == "human":
             self.camera_parameters = self.env.getDebugVisualizerCamera()
@@ -174,9 +167,11 @@ class GymEnv(gymnasium.Env):
         progress = min(1.0, self.total_env_steps / self.curriculum_steps)
         alpha = self.alpha_init + progress * (self.alpha_final - self.alpha_init)
         
-        # 1. Position Tracking Reward (Squared Exponential)
+        # 1. Position Tracking Reward
         pos_error_norm = np.linalg.norm(self.state[0:3])
-        reward_pos = np.exp(-alpha * (pos_error_norm**2))
+        # Gaussian reward centered at 0, ranging from 0 (far) to 1 (at goal)
+        # Then subtract 1 to get the range [-1, 0]
+        reward_pos = np.exp(-alpha * (pos_error_norm**2)) - 1.0
         
         # 2. Velocity Penalty Scaling
         # Penalty spikes as we get closer to the goal
@@ -203,6 +198,12 @@ class GymEnv(gymnasium.Env):
         
         self.reward = reward_pos + reward_vel + reward_upright + reward_smoothness
         
+        # Store individual components for debugging/logging
+        self.info["reward_pos"] = reward_pos
+        self.info["reward_vel"] = reward_vel
+        self.info["reward_upright"] = reward_upright
+        self.info["reward_smoothness"] = reward_smoothness
+        
         # Base penalties (collisions, bounds)
         if np.any(self.env.contact_array):
             self.reward -= 100.0
@@ -213,11 +214,6 @@ class GymEnv(gymnasium.Env):
             self.reward -= 100.0
             self.termination = True
             self.info["out_of_bounds"] = True
-            
-        if pos_error_norm < self.goal_tolerance:
-            self.reward += 100.0
-            self.termination = True
-            self.info["env_complete"] = True
 
     def step(self, action: np.ndarray) -> tuple[Any, float, bool, bool, dict[str, Any]]:
         # Scale action from [-1, 1] to physical limits

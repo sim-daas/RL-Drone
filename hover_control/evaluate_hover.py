@@ -15,7 +15,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from hover_control.gymenv import GymEnv
 
 
-def evaluate_model(model_path, stats_path=None, n_episodes=5, goal_position=[0.0, 0.0, 2.0]):
+def evaluate_model(model_path, stats_path=None, n_episodes=5):
     """
     Evaluate a trained SAC model.
     """
@@ -24,14 +24,12 @@ def evaluate_model(model_path, stats_path=None, n_episodes=5, goal_position=[0.0
     print("🎮 EVALUATING TRAINED HOVER MODEL")
     print("=" * 60)
     print(f"Model: {model_path}")
-    print(f"Goal Position: {goal_position}")
     print(f"Episodes: {n_episodes}")
     print("=" * 60)
     
     # Create environment with rendering enabled
     def make_eval_env():
         env = GymEnv(
-            goal_position=goal_position,
             goal_tolerance=0.2,
             flight_dome_size=10.0,
             agent_hz=30,
@@ -63,6 +61,7 @@ def evaluate_model(model_path, stats_path=None, n_episodes=5, goal_position=[0.0
         done = False
         episode_reward = 0
         episode_length = 0
+        components = {"reward_pos": 0, "reward_vel": 0, "reward_upright": 0, "reward_smoothness": 0}
         
         print(f"\n{'='*60}")
         print(f"Episode {episode + 1}/{n_episodes}")
@@ -77,6 +76,14 @@ def evaluate_model(model_path, stats_path=None, n_episodes=5, goal_position=[0.0
             episode_reward += reward[0]
             episode_length += 1
             
+            # Accumulate reward components
+            for key in components.keys():
+                components[key] += info[0].get(key, 0)
+
+            # Print rewards every 30 steps (~1 second)
+            if episode_length % 30 == 0:
+                print(f"  Step {episode_length:4d} | Pos: {info[0]['reward_pos']:.3f} | Vel: {info[0]['reward_vel']:.3f} | Up: {info[0]['reward_upright']:.3f} | Sm: {info[0]['reward_smoothness']:.3f}")
+            
             # Check termination reasons
             if done:
                 if info[0].get("env_complete", False):
@@ -89,6 +96,8 @@ def evaluate_model(model_path, stats_path=None, n_episodes=5, goal_position=[0.0
                     print(f"⏱️  Episode truncated (max steps)")
         
         print(f"Episode Reward: {episode_reward:.2f}")
+        for key, val in components.items():
+            print(f"  - {key}: {val/episode_length:.4f} (avg/step)")
         print(f"Episode Length: {episode_length} steps")
     
     env.close()
@@ -104,12 +113,6 @@ if __name__ == '__main__':
                         help='Path to VecNormalize stats (.pkl)')
     parser.add_argument('--episodes', type=int, default=5,
                         help='Number of episodes to evaluate')
-    parser.add_argument('--goal-x', type=float, default=0.0,
-                        help='Goal X coordinate')
-    parser.add_argument('--goal-y', type=float, default=0.0,
-                        help='Goal Y coordinate')
-    parser.add_argument('--goal-z', type=float, default=2.0,
-                        help='Goal Z coordinate')
     
     args = parser.parse_args()
     
@@ -118,12 +121,9 @@ if __name__ == '__main__':
     if not model_path.endswith(".zip") and not os.path.exists(model_path):
         if os.path.exists(model_path + ".zip"):
             model_path += ".zip"
-
-    goal_position = [args.goal_x, args.goal_y, args.goal_z]
     
     evaluate_model(
         model_path=model_path,
         stats_path=args.stats,
-        n_episodes=args.episodes,
-        goal_position=goal_position
+        n_episodes=args.episodes
     )

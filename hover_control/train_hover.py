@@ -25,14 +25,12 @@ os.environ["MKL_NUM_THREADS"] = "1"
 torch.set_num_threads(1)
 
 
-def make_env(goal_positions, rank, seed=0):
+def make_env(rank, seed=0):
     """
     Utility function for multiprocessed env.
     """
     def _init():
         env = GymEnv(
-            goal_position=goal_positions[0],
-            goal_positions=goal_positions,
             goal_tolerance=0.2,
             flight_dome_size=10.0,
             agent_hz=30,
@@ -76,15 +74,6 @@ def train():
     # CONFIGURATION
     # =========================
     
-    # Goal positions for hover task
-    GOAL_POSITIONS = [
-        [0.0, 0.0, 2.0],
-        [1.0, 1.0, 2.0],
-        [-1.0, 1.0, 2.0],
-        [1.0, -1.0, 2.0],
-        [-1.0, -1.0, 2.0],
-    ]
-    
     LOG_DIR = "./logs/hover_sac_v1/"
     TENSORBOARD_LOG = "./logs/tensorboard_hover/"
     N_ENVS = 12
@@ -100,6 +89,7 @@ def train():
     TRAIN_FREQ = 1
     GRADIENT_STEPS = 1
     
+    
     # Create directories
     os.makedirs(LOG_DIR, exist_ok=True)
     os.makedirs(TENSORBOARD_LOG, exist_ok=True)
@@ -114,7 +104,7 @@ def train():
     # =========================
     # CREATE VECTORIZED ENVIRONMENT
     # =========================
-    env_fns = [make_env(GOAL_POSITIONS, i) for i in range(N_ENVS)]
+    env_fns = [make_env(i) for i in range(N_ENVS)]
     vec_env = SubprocVecEnv(env_fns)
     
     # =========================
