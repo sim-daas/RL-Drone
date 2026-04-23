@@ -76,7 +76,7 @@ def train():
     
     LOG_DIR = "./logs/hover_sac_v1/"
     TENSORBOARD_LOG = "./logs/tensorboard_hover/"
-    N_ENVS = 12
+    N_ENVS = 24
     TOTAL_STEPS = 1_000_000
     
     # SAC hyperparameters
@@ -88,7 +88,7 @@ def train():
     GAMMA = 0.99
     TRAIN_FREQ = 1
     GRADIENT_STEPS = 1
-    
+
     
     # Create directories
     os.makedirs(LOG_DIR, exist_ok=True)
