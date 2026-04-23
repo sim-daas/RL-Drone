@@ -47,7 +47,7 @@ class GymEnv(gymnasium.Env):
         self.track = track
 
         # Curriculum and Reward parameters
-        self.alpha_init = 1.0
+        self.alpha = 1.0
         self.alpha_final = 10.0  # Steeper gradient at the end
         self.curriculum_steps = 500_000  # Reach max sharpness after this many steps
         self.total_env_steps = 0
@@ -164,25 +164,24 @@ class GymEnv(gymnasium.Env):
     def compute_reward(self, action: np.ndarray) -> None:
         # Curriculum: Adjust alpha based on total steps
         # Each environment instance will scale its own alpha as it gains experience
-        progress = min(1.0, self.total_env_steps / self.curriculum_steps)
-        alpha = self.alpha_init + progress * (self.alpha_final - self.alpha_init)
+        # progress = min(1.0, self.total_env_steps / self.curriculum_steps)
+        # alpha = self.alpha_init + progress * (self.alpha_final - self.alpha_init)
         
         # 1. Position Tracking Reward
         pos_error_norm = np.linalg.norm(self.state[0:3])
         # Gaussian reward centered at 0, ranging from 0 (far) to 1 (at goal)
         # Then subtract 1 to get the range [-1, 0]
-        reward_pos = np.exp(-alpha * (pos_error_norm**2)) - 1.0
+        reward_pos = np.exp(-self.alpha * (pos_error_norm**2)) - 1.0
         
-        # 2. Velocity Penalty Scaling
-        # Penalty spikes as we get closer to the goal
-        # As pos_error_norm -> 0, proximity_factor -> 1.0
-        # As pos_error_norm increases, proximity_factor decreases
-        proximity_factor = np.exp(-2.0 * pos_error_norm) 
-        
+        # 2. Velocity Reward
+        # reward = 0 if velocity is 0, negative if non-zero, range [-1, 0]
         lin_vel_norm = np.linalg.norm(self.state[7:10])
         ang_vel_norm = np.linalg.norm(self.state[10:13])
         
-        reward_vel = -self.w_vel * proximity_factor * (lin_vel_norm**2 + 0.1 * ang_vel_norm**2)
+        # Combine linear and angular velocity for the penalty
+        # w_vel controls the sensitivity/sharpness of the penalty
+        total_vel_sq = lin_vel_norm**2 + 0.1 * ang_vel_norm**2
+        reward_vel = np.exp(-self.w_vel * total_vel_sq) - 1.0
         
         # 3. Upright Penalty
         rot_mat = np.array(p.getMatrixFromQuaternion(self.state[3:7])).reshape(3, 3)
