@@ -19,7 +19,7 @@ class Env(Aviary):
             start_orn=np.array([[0.0, 0.0, 0.0]]),
             render=not rl,  # Disable rendering during RL training for speed
             drone_type="quadx",
-            drone_options=[dict(drone_model="cf2x")],
+            drone_options=[dict(drone_model="primitive_drone")],
             wind_type=wind_type,
             wind_options=wind_options,
         )
