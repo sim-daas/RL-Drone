@@ -129,11 +129,11 @@ class Env(Aviary):
             self.update_rotor_angles()
             
             # Update camera tracking
-            if self.track:
-                self.camera_step_counter += 1
-                if self.camera_step_counter >= self.camera_update_interval:
-                    self.update_camera()
-                    self.camera_step_counter = 0
+            # if self.track:
+            #     self.camera_step_counter += 1
+            #     if self.camera_step_counter >= self.camera_update_interval:
+            #         self.update_camera()
+            #         self.camera_step_counter = 0
     
     def stop(self):
         self.disconnect()

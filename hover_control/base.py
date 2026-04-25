@@ -19,7 +19,7 @@ class Env(Aviary):
             start_orn=np.array([[0.0, 0.0, 0.0]]),
             render=not rl,  # Disable rendering during RL training for speed
             drone_type="quadx",
-            drone_options=[dict(drone_model="cf2x")],
+            drone_options=[dict(drone_model="primitive_drone")],
             wind_type=wind_type,
             wind_options=wind_options,
         )
@@ -128,12 +128,12 @@ class Env(Aviary):
         if not self.rl:
             self.update_rotor_angles()
             
-            # Update camera tracking
-            if self.track:
-                self.camera_step_counter += 1
-                if self.camera_step_counter >= self.camera_update_interval:
-                    self.update_camera()
-                    self.camera_step_counter = 0
+            # # Update camera tracking
+            # if self.track:
+            #     self.camera_step_counter += 1
+            #     if self.camera_step_counter >= self.camera_update_interval:
+            #         self.update_camera()
+            #         self.camera_step_counter = 0
     
     def stop(self):
         self.disconnect()
