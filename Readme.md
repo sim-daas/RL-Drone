@@ -2,6 +2,7 @@
 
 A lightweight and high-fidelity suite of Reinforcement Learning environments for autonomous drone operations built on top of the PyFlyt simulation engine. This project features two primary operational tasks trained using Soft Actor-Critic (SAC).
 
+[![Hover Control](https://img.youtube.com/vi/rY_cwEJwi2A/0.jpg)](https://youtu.be/rY_cwEJwi2A)
 ---
 
 ## 🚀 Task 1: Drone Hover Control (Flight Mode 0 & 3)
